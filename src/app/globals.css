@@ -1,0 +1,573 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --font-sora: 'Sora', 'Noto Sans TC', system-ui, sans-serif;
+  --font-inter: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-geist-sans: 'Sora', 'Noto Sans TC', system-ui, sans-serif;
+  --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* 陰影系統 */
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+
+  /* 卡片特定陰影 */
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+  /* 光澤效果 */
+  --highlight-glow: 0 0 15px rgba(158, 119, 237, 0.15);
+
+  /* 物體陰影 - 使用在重要元素 */
+  --object-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+
+  /* 漸層疊加效果 */
+  --overlay-gradient: linear-gradient(180deg, rgba(158, 119, 237, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  /* 設備狀態標籤顏色 */
+  --status-normal-bg: var(--status-normal-bg);
+  --status-normal-text: var(--status-normal-text);
+  --status-warning-bg: var(--status-warning-bg);
+  --status-warning-text: var(--status-warning-text);
+  --status-critical-bg: var(--status-critical-bg);
+  --status-critical-text: var(--status-critical-text);
+  /* 監控面板卡片顏色 */
+  --metrics-temperature-bg: var(--metrics-temperature-bg);
+  --metrics-temperature-text: var(--metrics-temperature-text);
+  --metrics-load-bg: var(--metrics-load-bg);
+  --metrics-load-text: var(--metrics-load-text);
+  --metrics-efficiency-bg: var(--metrics-efficiency-bg);
+  --metrics-efficiency-text: var(--metrics-efficiency-text);
+  --metrics-vibration-bg: var(--metrics-vibration-bg);
+  --metrics-vibration-text: var(--metrics-vibration-text);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(100% 0 0);
+  /* 淺米白色 #f0eee5 */
+  --foreground: oklch(0.25 0.03 280);
+  /* 深紫色文字 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.03 280);
+  /* 深紫色文字 */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.03 280);
+  /* 深紫色文字 */
+  --primary: oklch(0.45 0.25 280);
+  /* Claude 紫色主色調 */
+  --primary-rgb: 158, 119, 237;
+  /* 新增: 紫色 primary 的 RGB 值 */
+  --primary-foreground: oklch(0.985 0.001 106.423);
+  --secondary: oklch(0.6 0.18 300);
+  /* 較淺的紫色作為次要色 */
+  --secondary-foreground: oklch(0.216 0.006 56.043);
+  --muted: oklch(0.97 0.001 106.424);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: oklch(0.75 0.13 290);
+  /* 更淺的紫色作為強調色 */
+  --accent-foreground: oklch(0.216 0.006 56.043);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.923 0.003 48.717);
+  --input: oklch(0.923 0.003 48.717);
+  --ring: oklch(0.709 0.01 56.259);
+  --chart-1: oklch(0.55 0.27 275);
+  /* 深紫 */
+  --chart-2: oklch(0.65 0.22 285);
+  /* 中紫 */
+  --chart-3: oklch(0.75 0.18 295);
+  /* 淺紫 */
+  --chart-4: oklch(0.45 0.15 260);
+  /* 藍紫 */
+  --chart-5: oklch(0.55 0.2 310);
+  /* 紫紅 */
+  --sidebar: oklch(0.97 0.02 85);
+  /* 淺米白色 #f0eee5 */
+  --sidebar-foreground: oklch(0.25 0.03 280);
+  /* 深紫色文字 */
+  --sidebar-primary: oklch(0.45 0.25 280);
+  /* 使用 Claude 主色調 */
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
+  --sidebar-border: oklch(0.923 0.003 48.717);
+  --sidebar-ring: oklch(0.709 0.01 56.259);
+
+  /* 設備狀態標籤顏色 - 亮色主題 */
+  --status-normal-bg: #E7F6E7;
+  /* ✅ 運行正常背景 */
+  --status-normal-text: #3D8146;
+  /* ✅ 運行正常字色 */
+  --status-warning-bg: #FFF4D9;
+  /* ⚠️ 需要注意背景 */
+  --status-warning-text: #C28100;
+  /* ⚠️ 需要注意字色 */
+  --status-critical-bg: #FFE8E8;
+  /* 🚨 狀態危急背景 */
+  --status-critical-text: #D32F2F;
+  /* 🚨 狀態危急字色 */
+
+  /* 監控面板卡片顏色 - 亮色主題 */
+  --metrics-temperature-bg: #FFF2F2;
+  /* 溫度卡片背景 */
+  --metrics-temperature-text: #D63C3C;
+  /* 溫度卡片文字 */
+  --metrics-load-bg: #F1F6FF;
+  /* 負載卡片背景 */
+  --metrics-load-text: #2A68B8;
+  /* 負載卡片文字 */
+  --metrics-efficiency-bg: #F5FAEE;
+  /* 效率卡片背景 */
+  --metrics-efficiency-text: #5A8100;
+  /* 效率卡片文字 */
+  --metrics-vibration-bg: #FFF8E7;
+  /* 振動卡片背景 */
+  --metrics-vibration-text: #FF8B00;
+  /* 振動卡片文字 */
+}
+
+.dark {
+  /* 基礎背景與文字顏色 - 與 Claude 介面相似的深灰黑色 */
+  --background: #1E1E1E;
+  /* 主要背景色 - 深灰黑 */
+  --foreground: #ECECEC;
+  /* 主要文字色 - 柔和的亮灰色 */
+  --card: #222222;
+  /* 卡片背景色 - 稍微亮一點的深灰色 */
+  --card-foreground: #ECECEC;
+  /* 卡片文字色 */
+
+  /* 彈出窗口顏色 */
+  --popover: #222222;
+  /* 彈出窗口背景色 */
+  --popover-foreground: #ECECEC;
+  /* 彈出窗口文字色 */
+
+  /* UI 相關顏色 */
+  --primary: #9E77ED;
+  /* 主要按鈕色調 - 柔和的紫色 */
+  --primary-rgb: 158, 119, 237;
+  /* 新增: 紫色 primary 的 RGB 值 */
+  --primary-foreground: #1E1E1E;
+  /* 主要按鈕文字色 */
+  --secondary: #2D2B36;
+  /* 次要色調 - 帶紫色的深灰 */
+  --secondary-foreground: #ECECEC;
+  /* 次要元素文字色 */
+  --muted: #2D2B36;
+  /* 弱化元素背景色 */
+  --muted-foreground: #A1A1A1;
+  /* 弱化元素文字色 */
+  --accent: #2D2B36;
+  /* 強調色背景 */
+  --accent-foreground: #ECECEC;
+  /* 強調色文字 */
+
+  /* 邊框與互動元素 */
+  --destructive: #913A3A;
+  /* 危險操作色調 */
+  --border: #333333;
+  /* 邊框顏色 */
+  --input: #2D2D2D;
+  /* 輸入框背景色 */
+  --ring: #9E77ED;
+  /* 交互環顏色 */
+
+  /* 圖表顏色 */
+  --chart-1: #9E77ED;
+  /* 主要圖表顏色 - 紫色 */
+  --chart-2: #75A0E3;
+  /* 藍色 */
+  --chart-3: #A6C270;
+  /* 綠色 */
+  --chart-4: #FF7A7A;
+  /* 紅色 */
+  --chart-5: #FFBB5C;
+  /* 橙色 */
+
+  /* 側邊欄顏色 */
+  --sidebar: #161616;
+  /* 側邊欄背景色 - 比主背景更深 */
+  --sidebar-foreground: #ECECEC;
+  /* 側邊欄文字色 */
+  --sidebar-primary: #9E77ED;
+  /* 側邊欄主要色調 */
+  --sidebar-primary-foreground: #1E1E1E;
+  /* 側邊欄主要元素文字色 */
+  --sidebar-accent: #2D2B36;
+  /* 側邊欄強調色 */
+  --sidebar-accent-foreground: #ECECEC;
+  /* 側邊欄強調色文字 */
+  --sidebar-border: #333333;
+  /* 側邊欄邊框色 */
+  --sidebar-ring: #9E77ED;
+  /* 側邊欄交互環顏色 */
+
+  /* 設備狀態標籤顏色 - 暗色主題 */
+  --status-normal-bg: #222A1A;
+  /* ✅ 運行正常背景 - 深綠色帶紫調 */
+  --status-normal-text: #A6C270;
+  /* ✅ 運行正常字色 - 柔和綠色 */
+  --status-warning-bg: #312A1C;
+  /* ⚠️ 需要注意背景 - 深琥珀色 */
+  --status-warning-text: #FFBB5C;
+  /* ⚠️ 需要注意字色 - 溫暖的金黃色 */
+  --status-critical-bg: #2B1E1E;
+  /* 🚨 狀態危急背景 - 深酒紅色 */
+  --status-critical-text: #FF7A7A;
+  /* 🚨 狀態危急字色 - 溫和的紅色 */
+
+  /* 監控面板卡片顏色 - 暗色主題（溫柔科技感） */
+  --metrics-temperature-bg: #2B1E1E;
+  /* 溫度卡片背景 - 深沉的紅色調 */
+  --metrics-temperature-text: #FF7A7A;
+  /* 溫度卡片文字 - 柔和的紅色 */
+  --metrics-load-bg: #1E2533;
+  /* 負載卡片背景 - 深沉的藍色調 */
+  --metrics-load-text: #75A0E3;
+  /* 負載卡片文字 - 柔和的藍色 */
+  --metrics-efficiency-bg: #222A1A;
+  /* 效率卡片背景 - 深沉的綠色調 */
+  --metrics-efficiency-text: #A6C270;
+  /* 效率卡片文字 - 柔和的綠色 */
+  --metrics-vibration-bg: #2A2418;
+  /* 振動卡片背景 - 深沉的黃色調 */
+  --metrics-vibration-text: #FFBB5C;
+  /* 振動卡片文字 - 柔和的橙色 */
+
+  /* 暗色主題陰影變數 */
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+
+  /* 暗色主題卡片陰影 */
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  /* 暗色主題光澤效果 */
+  --highlight-glow: 0 0 15px rgba(158, 119, 237, 0.25);
+
+  /* 暗色主題物體陰影 */
+  --object-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+
+  /* 暗色主題漸層疊加效果 */
+  --overlay-gradient: linear-gradient(180deg, rgba(158, 119, 237, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+body {
+  @apply overscroll-none bg-transparent;
+}
+
+:root {
+  --font-sans: var(--font-sora);
+  --header-height: calc(var(--spacing) * 12 + 1px);
+}
+
+.theme-scaled {
+  @media (min-width: 1024px) {
+    --radius: 0.6rem;
+    --text-lg: 1.05rem;
+    --text-base: 0.85rem;
+    --text-sm: 0.8rem;
+    --spacing: 0.222222rem;
+  }
+
+  [data-slot="card"] {
+    --spacing: 0.16rem;
+  }
+
+  [data-slot="select-trigger"],
+  [data-slot="toggle-group-item"] {
+    --spacing: 0.222222rem;
+  }
+}
+
+.theme-default,
+.theme-default-scaled {
+  --primary: var(--color-neutral-600);
+  --primary-foreground: var(--color-neutral-50);
+
+  @variant dark {
+    --primary: var(--color-neutral-500);
+    --primary-foreground: var(--color-neutral-50);
+  }
+}
+
+.theme-blue,
+.theme-blue-scaled {
+  --primary: oklch(0.55 0.18 250);
+  --primary-foreground: oklch(0.98 0.01 260);
+
+  @variant dark {
+    --primary: oklch(0.6 0.15 255);
+    --primary-foreground: oklch(0.98 0.01 260);
+  }
+}
+
+.theme-green,
+.theme-green-scaled {
+  --primary: #5A8100;
+  --primary-foreground: oklch(0.98 0.01 150);
+
+  @variant dark {
+    --primary: oklch(0.65 0.12 150);
+    --primary-foreground: oklch(0.98 0.01 150);
+  }
+}
+
+.theme-amber,
+.theme-amber-scaled {
+  --primary: #FFB400;
+  --primary-foreground: oklch(0.98 0.01 85);
+
+  @variant dark {
+    --primary: oklch(0.7 0.12 85);
+    --primary-foreground: oklch(0.98 0.01 85);
+  }
+}
+
+.theme-orange,
+.theme-orange-scaled {
+  --primary: #FF6C02;
+  --primary-foreground: oklch(0.98 0.01 280);
+
+  @variant dark {
+    --primary: #D97757;
+    --primary-foreground: oklch(0.98 0.01 280);
+  }
+}
+
+.theme-mono,
+.theme-mono-scaled {
+  --font-sans: var(--font-mono);
+  --primary: oklch(0.55 0.05 280);
+  --primary-foreground: oklch(0.98 0.01 280);
+
+  @variant dark {
+    --primary: oklch(0.6 0.08 285);
+    --primary-foreground: oklch(0.98 0.01 280);
+  }
+
+  .rounded-xs,
+  .rounded-sm,
+  .rounded-md,
+  .rounded-lg,
+  .rounded-xl {
+    @apply !rounded-none;
+    border-radius: 0;
+  }
+
+  .shadow-xs,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    @apply !shadow-none;
+  }
+
+  [data-slot="toggle-group"],
+  [data-slot="toggle-group-item"] {
+    @apply !rounded-none !shadow-none;
+  }
+}
+
+/* 最下方修改這些工具類 */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.dark .glass-effect {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.inner-shadow {
+  box-shadow: var(--shadow-inner);
+}
+
+.shadow-depth-1 {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-depth-2 {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-depth-3 {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-depth-4 {
+  box-shadow: var(--shadow-xl);
+}
+
+.object-shadow {
+  box-shadow: var(--object-shadow);
+}
+
+.highlight-glow {
+  box-shadow: var(--highlight-glow);
+}
+
+.overlay-gradient {
+  position: relative;
+}
+
+.overlay-gradient::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: var(--overlay-gradient);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.light-reflection {
+  position: relative;
+  overflow: hidden;
+}
+
+.light-reflection::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 60%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.light-reflection:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 鏡面反射效果 */
+.mirror-effect {
+  position: relative;
+}
+
+.mirror-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.dark .mirror-effect::before {
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 50%,
+      rgba(255, 255, 255, 0) 100%);
+}
+
+/* 卡片懸浮效果 */
+.hover-float {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-float:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 點擊效果 */
+.press-effect {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.press-effect:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 新增全局偽元素指針事件處理 */
+[class*="shadow"]::before,
+[class*="shadow"]::after,
+[class*="effect"]::before,
+[class*="effect"]::after,
+[class*="gradient"]::before,
+[class*="gradient"]::after,
+[class*="reflection"]::before,
+[class*="reflection"]::after,
+[class*="glow"]::before,
+[class*="glow"]::after,
+[class*="float"]::before,
+[class*="float"]::after {
+  pointer-events: none;
+}
