@@ -154,30 +154,6 @@ const ESGReportGenerator: React.FC = () => {
     }));
   };
 
-  const addProject = () => {
-    setFormData(prev => ({
-      ...prev,
-      projects: [
-        ...prev.projects,
-        {
-          name: "新永續項目",
-          category: "environmental",
-          description: "項目描述...",
-          startDate: new Date().toISOString().split('T')[0],
-          status: "planning",
-          investmentAmount: 1000,
-          estimatedImpact: "預期正面影響"
-        }
-      ]
-    }));
-  };
-
-  const removeProject = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      projects: prev.projects.filter((_, i) => i !== index)
-    }));
-  };
 
   const generateReport = async () => {
     setIsGenerating(true);
@@ -420,11 +396,11 @@ const ESGReportGenerator: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto p-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <IconReportAnalytics className="h-8 w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <IconReportAnalytics className="h-8 w-8" />
             ESG報告自動生成器
           </h1>
           <p className="text-muted-foreground mt-2">
@@ -720,9 +696,6 @@ const ESGReportGenerator: React.FC = () => {
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
               📊 永續項目
-              <Button onClick={addProject} size="sm" variant="outline">
-                新增項目
-              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -731,14 +704,6 @@ const ESGReportGenerator: React.FC = () => {
                 <div key={index} className="border rounded-lg p-4 space-y-4">
                   <div className="flex justify-between items-center">
                     <h4 className="font-medium">項目 {index + 1}</h4>
-                    <Button
-                      onClick={() => removeProject(index)}
-                      size="sm"
-                      variant="outline"
-                      className="text-red-600"
-                    >
-                      刪除
-                    </Button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
