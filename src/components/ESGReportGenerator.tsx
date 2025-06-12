@@ -550,6 +550,7 @@ const ESGReportGenerator: React.FC = () => {
     "ESGOrSustainabilityOfficerOrDepartmentInPlace": false,
   }
   公司章程對應為presenceOfCompanyRulesOrOperationsPolicy
+  永續單位對應為ESGOrSustainabilityOfficerOrDepartmentInPlace
   `;
 
   const handleSendPrompt = async () => {
