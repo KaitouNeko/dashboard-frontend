@@ -51,12 +51,6 @@ interface ESGFormData {
   wasteSeparationAndRecycling: boolean;
   environmentalCertifications: boolean;
 
-  // carbonReduction: number;
-  // energySaved: number;
-  // renewablePercentage: number;
-  // wasteReduction: number;
-  // waterSaved: number;
-
   // 社會指標
   totalNumberOfEmployees: number;
   percentageOfFemaleEmployees: number;
@@ -65,11 +59,6 @@ interface ESGFormData {
   participationInCommunityActivities: boolean;
   employeeTurnoverRate: number;
 
-  // communityBeneficiaries: number;
-  // employeeVolunteerHours: number;
-  // diversityScore: number;
-  // trainingHours: number;
-
   // 治理指標
   presenceOfCompanyRulesOrOperationsPolicy: boolean;
   responsiblePersonForFinanceOrRisk: boolean;
@@ -77,21 +66,6 @@ interface ESGFormData {
   salaryAndPromotionPolicyInPlace: boolean;
   transparencyInMajorCompanyPolicies: boolean;
   ESGOrSustainabilityOfficerOrDepartmentInPlace: boolean;
-
-  // transparencyScore: number;
-  // ethicsTraining: number;
-  // riskAssessment: number;
-
-  // 永續項目
-  // projects: Array<{
-  //   name: string;
-  //   category: 'environmental' | 'social' | 'governance';
-  //   description: string;
-  //   startDate: string;
-  //   status: 'planning' | 'in-progress' | 'completed';
-  //   investmentAmount: number;
-  //   estimatedImpact: string;
-  // }>;
 }
 
 const ESGReportGenerator: React.FC = () => {
@@ -201,12 +175,6 @@ const ESGReportGenerator: React.FC = () => {
     wasteSeparationAndRecycling: false,
     environmentalCertifications: false,
 
-    // carbonReduction: 0,
-    // energySaved: 0,
-    // renewablePercentage: 0,
-    // wasteReduction: 0,
-    // waterSaved: 0,
-
     // 社會指標
     totalNumberOfEmployees: 0,
     percentageOfFemaleEmployees: 0,
@@ -215,11 +183,6 @@ const ESGReportGenerator: React.FC = () => {
     participationInCommunityActivities: false,
     employeeTurnoverRate: 0,
 
-    // communityBeneficiaries: 0,
-    // employeeVolunteerHours: 0,
-    // diversityScore: 0,
-    // trainingHours: 0,
-
     // 治理指標
     presenceOfCompanyRulesOrOperationsPolicy: false,
     responsiblePersonForFinanceOrRisk: false,
@@ -227,10 +190,6 @@ const ESGReportGenerator: React.FC = () => {
     salaryAndPromotionPolicyInPlace: false,
     transparencyInMajorCompanyPolicies: false,
     ESGOrSustainabilityOfficerOrDepartmentInPlace: false,
-
-    // transparencyScore: 0,
-    // ethicsTraining: 0,
-    // riskAssessment: 0,
   });
 
   console.log('formData', formData);
@@ -295,39 +254,37 @@ const ESGReportGenerator: React.FC = () => {
         },
         projectResults: {
           ...baseData.projectResults,
-          // environmentalMetrics: {
-          //   carbonReduction: formData.carbonReduction,
-          //   energySaved: formData.energySaved,
-          //   renewablePercentage: formData.renewablePercentage,
-          //   wasteReduction: formData.wasteReduction,
-          //   waterSaved: formData.waterSaved,
-          // },
-          // socialMetrics: {
-          //   communityBeneficiaries: formData.communityBeneficiaries,
-          //   employeeVolunteerHours: formData.employeeVolunteerHours,
-          //   diversityScore: formData.diversityScore,
-          //   trainingHours: formData.trainingHours,
-          // },
-          // governanceMetrics: {
-          //   transparencyScore: formData.transparencyScore,
-          //   ethicsTraining: formData.ethicsTraining,
-          //   riskAssessment: formData.riskAssessment,
-          // },
+          environmentalMetrics: {
+            annualElectricityUsage: formData.annualElectricityUsage,
+            useOfRenewableEnergy: formData.useOfRenewableEnergy,
+            annualWaterUsage: formData.annualWaterUsage,
+            wasteSeparationAndRecycling: formData.wasteSeparationAndRecycling,
+            environmentalCertifications: formData.environmentalCertifications,
+          },
+          socialMetrics: {
+            totalNumberOfEmployees: formData.totalNumberOfEmployees,
+            percentageOfFemaleEmployees: formData.percentageOfFemaleEmployees,
+            employeeTrainingProvided: formData.employeeTrainingProvided,
+            averageTrainingHoursPerEmployee:
+              formData.averageTrainingHoursPerEmployee,
+            participationInCommunityActivities:
+              formData.participationInCommunityActivities,
+            employeeTurnoverRate: formData.employeeTurnoverRate,
+          },
+          governanceMetrics: {
+            presenceOfCompanyRulesOrOperationsPolicy:
+              formData.presenceOfCompanyRulesOrOperationsPolicy,
+            responsiblePersonForFinanceOrRisk:
+              formData.responsiblePersonForFinanceOrRisk,
+            regularInternalMeetingsHeld: formData.regularInternalMeetingsHeld,
+            salaryAndPromotionPolicyInPlace:
+              formData.salaryAndPromotionPolicyInPlace,
+            transparencyInMajorCompanyPolicies:
+              formData.transparencyInMajorCompanyPolicies,
+            ESGOrSustainabilityOfficerOrDepartmentInPlace:
+              formData.ESGOrSustainabilityOfficerOrDepartmentInPlace,
+          },
         },
-        // sustainabilityProjects: {
-        //   ...baseData.sustainabilityProjects,
-        //   projects: formData.projects.map((project) => ({
-        //     name: project.name,
-        //     category: project.category,
-        //     description: project.description,
-        //     startDate: new Date(project.startDate),
-        //     status: project.status,
-        //     keyMetrics: {
-        //       investmentAmount: project.investmentAmount,
-        //       estimatedImpact: project.estimatedImpact,
-        //     },
-        //   })),
-        // },
       };
 
       setGeneratedData(reportData);
@@ -586,12 +543,6 @@ const ESGReportGenerator: React.FC = () => {
         wasteSeparationAndRecycling: transData.wasteSeparationAndRecycling,
         environmentalCertifications: transData.environmentalCertifications,
 
-        // carbonReduction: transData.carbonReduction,
-        // energySaved: transData.energySaved,
-        // renewablePercentage: transData.renewablePercentage,
-        // wasteReduction: transData.wasteReduction,
-        // waterSaved: transData.waterSaved,
-
         // 社會指標
         totalNumberOfEmployees: transData.totalNumberOfEmployees,
         percentageOfFemaleEmployees: transData.percentageOfFemaleEmployees,
@@ -601,11 +552,6 @@ const ESGReportGenerator: React.FC = () => {
         participationInCommunityActivities:
           transData.participationInCommunityActivities,
         employeeTurnoverRate: transData.employeeTurnoverRate,
-
-        // communityBeneficiaries: transData.communityBeneficiaries,
-        // employeeVolunteerHours: transData.employeeVolunteerHours,
-        // diversityScore: transData.diversityScore,
-        // trainingHours: transData.trainingHours,
 
         // 治理指標
         presenceOfCompanyRulesOrOperationsPolicy:
@@ -619,69 +565,9 @@ const ESGReportGenerator: React.FC = () => {
           transData.transparencyInMajorCompanyPolicies,
         ESGOrSustainabilityOfficerOrDepartmentInPlace:
           transData.ESGOrSustainabilityOfficerOrDepartmentInPlace,
-
-        // transparencyScore: transData.transparencyScore,
-        // ethicsTraining: transData.ethicsTraining,
-        // riskAssessment: transData.riskAssessment,
       }));
-      // setContent(data.data.response);
     }
   };
-  // useEffect(() => {
-  //   const handleGetAI = async () => {
-  //     const data = await axiosInstance.post('/chat', {
-  //       message: content + solidContent,
-  //       model: 'openai',
-  //     });
-  //     // console.log('data', data.data);
-  //     if (data?.data) {
-  //       const formatData = `${data.data.response
-  //         .replace(/```json/g, '')
-  //         .replace(/```/g, '')}`;
-  //       console.log('formatData', JSON.parse(formatData));
-  //       const transData = JSON.parse(formatData);
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         companyName: transData.companyName || prev.companyName,
-  //         facilityType: transData.facilityType ? '1' : prev.facilityType,
-  //         foundedYear: transData.foundedYear || prev.foundedYear,
-  //         employeeCount: transData.employeeCount || prev.employeeCount,
-  //         headquarters: transData.headquarters || prev.headquarters,
-  //         industry: transData.industry || prev.industry,
-  //         mission: transData.mission || prev.mission,
-  //         vision: transData.vision || prev.vision,
-  //         coreValues: transData.coreValues || prev.coreValues,
-  //         revenue: transData.revenue || 380000,
-  //         profit: transData.profit || 42000,
-
-  //         // 環境指標
-  //         carbonReduction: transData.carbonReduction || prev.carbonReduction,
-  //         energySaved: transData.energySaved || prev.energySaved,
-  //         renewablePercentage:
-  //           transData.renewablePercentage || prev.renewablePercentage,
-  //         wasteReduction: transData.wasteReduction || prev.wasteReduction,
-  //         waterSaved: transData.waterSaved || prev.waterSaved,
-
-  //         // 社會指標
-  //         communityBeneficiaries:
-  //           transData.communityBeneficiaries || prev.communityBeneficiaries,
-  //         employeeVolunteerHours:
-  //           transData.employeeVolunteerHours || prev.employeeVolunteerHours,
-  //         diversityScore: transData.diversityScore || prev.diversityScore,
-  //         trainingHours: transData.trainingHours || prev.trainingHours,
-
-  //         // 治理指標
-  //         transparencyScore:
-  //           transData.transparencyScore || prev.transparencyScore,
-  //         ethicsTraining: transData.ethicsTraining || prev.ethicsTraining,
-  //         riskAssessment: transData.riskAssessment || prev.riskAssessment,
-  //       }));
-  //       setContent(data.data.response);
-  //     }
-  //   };
-  //   handleGetAI();
-  // }, []);
-  // console.log('content', content);
 
   if (isGenerated && generatedData) {
     return (
@@ -1018,76 +904,6 @@ const ESGReportGenerator: React.FC = () => {
                   </div>
                 </RadioGroup>
               </div>
-              {/* <div>
-                <Label htmlFor="carbonReduction">碳減排量 (噸)</Label>
-                <Input
-                  id="carbonReduction"
-                  type="number"
-                  value={formData.carbonReduction}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'carbonReduction',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="energySaved">節約能源 (度)</Label>
-                <Input
-                  id="energySaved"
-                  type="number"
-                  value={formData.energySaved}
-                  onChange={(e) =>
-                    handleInputChange('energySaved', parseInt(e.target.value))
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="renewablePercentage">再生能源比例 (%)</Label>
-                <Input
-                  id="renewablePercentage"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.renewablePercentage}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'renewablePercentage',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="wasteReduction">廢棄物減少 (噸)</Label>
-                <Input
-                  id="wasteReduction"
-                  type="number"
-                  value={formData.wasteReduction}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'wasteReduction',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="waterSaved">節約用水 (立方米)</Label>
-                <Input
-                  id="waterSaved"
-                  type="number"
-                  value={formData.waterSaved}
-                  onChange={(e) =>
-                    handleInputChange('waterSaved', parseInt(e.target.value))
-                  }
-                />
-              </div> */}
             </CardContent>
           </Card>
 
@@ -1213,64 +1029,6 @@ const ESGReportGenerator: React.FC = () => {
                   }
                 />
               </div>
-              {/* <div>
-                <Label htmlFor="communityBeneficiaries">社區受益人數</Label>
-                <Input
-                  id="communityBeneficiaries"
-                  type="number"
-                  value={formData.communityBeneficiaries}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'communityBeneficiaries',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="employeeVolunteerHours">員工志工時數</Label>
-                <Input
-                  id="employeeVolunteerHours"
-                  type="number"
-                  value={formData.employeeVolunteerHours}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'employeeVolunteerHours',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="diversityScore">多元化評分 (0-100)</Label>
-                <Input
-                  id="diversityScore"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.diversityScore}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'diversityScore',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="trainingHours">每位員工培訓時數</Label>
-                <Input
-                  id="trainingHours"
-                  type="number"
-                  value={formData.trainingHours}
-                  onChange={(e) =>
-                    handleInputChange('trainingHours', parseInt(e.target.value))
-                  }
-                />
-              </div> */}
             </CardContent>
           </Card>
 
@@ -1460,267 +1218,9 @@ const ESGReportGenerator: React.FC = () => {
                   </div>
                 </RadioGroup>
               </div>
-              {/* <div>
-                <Label htmlFor="transparencyScore">透明度評分 (0-100)</Label>
-                <Input
-                  id="transparencyScore"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.transparencyScore}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'transparencyScore',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="ethicsTraining">道德培訓完成率 (%)</Label>
-                <Input
-                  id="ethicsTraining"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.ethicsTraining}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'ethicsTraining',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="riskAssessment">風險評估完整性 (0-100)</Label>
-                <Input
-                  id="riskAssessment"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.riskAssessment}
-                  onChange={(e) =>
-                    handleInputChange(
-                      'riskAssessment',
-                      parseInt(e.target.value)
-                    )
-                  }
-                />
-              </div> */}
             </CardContent>
           </Card>
         </div>
-
-        {/* 永續項目 */}
-        {false && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center justify-between">
-                📊 永續項目
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {formData.projects.map((project, index) => (
-                  <div key={index} className="border rounded-lg p-4 space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-medium">項目 {index + 1}</h4>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>項目名稱</Label>
-                        <Input
-                          value={project.name}
-                          onChange={(e) =>
-                            handleProjectChange(index, 'name', e.target.value)
-                          }
-                        />
-                      </div>
-
-                      <div>
-                        <Label>項目類別</Label>
-                        <Select
-                          value={project.category}
-                          onValueChange={(value) =>
-                            handleProjectChange(index, 'category', value)
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="environmental">環境</SelectItem>
-                            <SelectItem value="social">社會</SelectItem>
-                            <SelectItem value="governance">治理</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label>開始日期</Label>
-                        <Input
-                          type="date"
-                          value={project.startDate}
-                          onChange={(e) =>
-                            handleProjectChange(
-                              index,
-                              'startDate',
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div>
-                        <Label>項目狀態</Label>
-                        <Select
-                          value={project.status}
-                          onValueChange={(value) =>
-                            handleProjectChange(index, 'status', value)
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="planning">規劃中</SelectItem>
-                            <SelectItem value="in-progress">進行中</SelectItem>
-                            <SelectItem value="completed">已完成</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label>投資金額 (萬元)</Label>
-                        <Input
-                          type="number"
-                          value={project.investmentAmount}
-                          onChange={(e) =>
-                            handleProjectChange(
-                              index,
-                              'investmentAmount',
-                              parseInt(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div>
-                        <Label>預期影響</Label>
-                        <Input
-                          value={project.estimatedImpact}
-                          onChange={(e) =>
-                            handleProjectChange(
-                              index,
-                              'estimatedImpact',
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label>項目描述</Label>
-                      <div className="space-y-2">
-                        <div className="flex gap-2">
-                          <Textarea
-                            value={project.description}
-                            onChange={(e) =>
-                              handleProjectChange(
-                                index,
-                                'description',
-                                e.target.value
-                              )
-                            }
-                            rows={3}
-                            className="flex-1"
-                            placeholder="詳細描述項目的目標、執行方式和預期成果..."
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => generateAISuggestion(index)}
-                            disabled={
-                              loadingAI[index] ||
-                              !project.name ||
-                              !project.category
-                            }
-                            className="flex items-center gap-1 px-3 py-2 h-auto whitespace-nowrap"
-                            title="AI智能建議項目描述"
-                          >
-                            {loadingAI[index] ? (
-                              <>
-                                <div className="animate-spin h-3 w-3 border border-gray-300 border-t-blue-600 rounded-full"></div>
-                                <span className="text-xs">生成中</span>
-                              </>
-                            ) : (
-                              <>
-                                <IconSparkles className="h-3 w-3 text-blue-600" />
-                                <span className="text-xs">AI建議</span>
-                              </>
-                            )}
-                          </Button>
-                        </div>
-
-                        {/* AI建議顯示區域 */}
-                        {aiSuggestions[index] && (
-                          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <IconSparkles className="h-4 w-4 text-blue-600" />
-                                <span className="text-sm font-medium text-blue-800">
-                                  AI 智能建議
-                                </span>
-                              </div>
-                              <div className="flex gap-1">
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => applyAISuggestion(index)}
-                                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-100 text-xs px-2 py-1 h-auto"
-                                  title="使用此建議"
-                                >
-                                  <IconCopy className="h-3 w-3 mr-1" />
-                                  使用建議
-                                </Button>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() =>
-                                    setAiSuggestions((prev) => {
-                                      const newSuggestions = { ...prev };
-                                      delete newSuggestions[index];
-                                      return newSuggestions;
-                                    })
-                                  }
-                                  className="text-gray-500 hover:text-gray-600 hover:bg-gray-100 text-xs px-2 py-1 h-auto"
-                                  title="關閉建議"
-                                >
-                                  ✕
-                                </Button>
-                              </div>
-                            </div>
-                            <p className="text-sm text-gray-700 leading-relaxed">
-                              {aiSuggestions[index]}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* 操作按鈕 */}
         <div className="flex justify-center gap-4">
