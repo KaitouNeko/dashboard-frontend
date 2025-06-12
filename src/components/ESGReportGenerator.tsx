@@ -515,41 +515,41 @@ const ESGReportGenerator: React.FC = () => {
     治理指標方面，透明度得分是90，倫理培訓參與率是95%，風險評估完成率是100%。`);
 
   const solidContent = `
-  請將以上描述內容格式化為JSON對象，並填入以下欄位，不要有其他文字，如果找不到適合填入欄位就帶入空字串，格式為：
+  請將上述描述內容符合的值填入以下對應欄位，並格式化為JSON對象，不要有其他文字，如果找不到適合填入的欄位，字串類型就帶入空字串，數字類型就帶入0，格式為：
   {
-    companyName: string,
-    facilityType: string,
-    foundedYear: number,
-    employeeCount: number,
-    headquarters: string,
-    industry: string,
-    mission: string,
-    vision: string,
-    coreValues: string[],
-    revenue: number,
-    profit: number,
+    "companyName": string,
+    "facilityType": string,
+    "foundedYear": number,
+    "employeeCount": number,
+    "headquarters": string,
+    "industry": string,
+    "mission": string,
+    "vision": string,
+    "coreValues": string[],
+    "revenue": number,
+    "profit": number,
 
-    annualElectricityUsage: number,
-    useOfRenewableEnergy: boolean,
-    annualWaterUsage: number,
-    wasteSeparationAndRecycling: boolean,
-    environmentalCertifications: boolean,
+    "annualElectricityUsage": number,
+    "useOfRenewableEnergy": boolean,
+    "annualWaterUsage": number,
+    "wasteSeparationAndRecycling": boolean,
+    "environmentalCertifications": boolean,
 
-    totalNumberOfEmployees: number,
-    percentageOfFemaleEmployees: number,
-    employeeTrainingProvided: boolean,
-    averageTrainingHoursPerEmployee: number,
-    participationInCommunityActivities: boolean,
-    employeeTurnoverRate: number,
+    "totalNumberOfEmployees": number,
+    "percentageOfFemaleEmployees": number,
+    "employeeTrainingProvided": boolean,
+    "averageTrainingHoursPerEmployee": number,
+    "participationInCommunityActivities": boolean,
+    "employeeTurnoverRate": number,
 
-    presenceOfCompanyRulesOrOperationsPolicy: false,
-    responsiblePersonForFinanceOrRisk: false,
-    regularInternalMeetingsHeld: false,
-    salaryAndPromotionPolicyInPlace: false,
-    transparencyInMajorCompanyPolicies: false,
-    ESGOrSustainabilityOfficerOrDepartmentInPlace: false,
-    
+    "presenceOfCompanyRulesOrOperationsPolicy": false,
+    "responsiblePersonForFinanceOrRisk": false,
+    "regularInternalMeetingsHeld": false,
+    "salaryAndPromotionPolicyInPlace": false,
+    "transparencyInMajorCompanyPolicies": false,
+    "ESGOrSustainabilityOfficerOrDepartmentInPlace": false,
   }
+  公司章程對應為presenceOfCompanyRulesOrOperationsPolicy
   `;
 
   const handleSendPrompt = async () => {
