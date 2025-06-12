@@ -779,7 +779,7 @@ const ESGReportGenerator: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="revenue">營收 (萬元)</Label>
+                  <Label htmlFor="revenue">營收</Label>
                   <Input
                     id="revenue"
                     type="number"
@@ -790,7 +790,7 @@ const ESGReportGenerator: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="profit">獲利 (萬元)</Label>
+                  <Label htmlFor="profit">獲利</Label>
                   <Input
                     id="profit"
                     type="number"
