@@ -68,6 +68,13 @@ interface ESGFormData {
   ESGOrSustainabilityOfficerOrDepartmentInPlace: boolean;
 }
 
+const LLM_MODELS = [
+  { id: 'gemini', name: 'Google Gemini', disabled: false },
+  { id: 'openai', name: 'OpenAI GPT-4', disabled: false },
+  { id: 'watsonx', name: 'IBM WatsonX', disabled: false },
+  // { id: 'claude', name: 'Anthropic Claude', disabled: true },
+];
+
 const ESGReportGenerator: React.FC = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedData, setGeneratedData] = useState<any>(null);
@@ -463,6 +470,8 @@ const ESGReportGenerator: React.FC = () => {
     }
   };
 
+  const [selectedLLM, setSelectedLLM] = useState('gemini');
+
   const [content, setContent] = useState<string>(`
     這是一間名為 GreenFuture Tech Inc. 的企業，成立於 2010 年，總部位於美國加州聖荷西，屬於潔淨能源技術產業，主要從事綠能解決方案的開發與應用。公司目前擁有約 850 名員工，設施類型為企業總部。
 
@@ -516,9 +525,11 @@ const ESGReportGenerator: React.FC = () => {
   `;
 
   const handleSendPrompt = async () => {
-    const data = await axiosInstance.post('/chat', {
+    const data = await axiosInstance.post('/esg/chat', {
       message: '描述：' + content + '。' + solidContent,
-      model: 'openai',
+      model: selectedLLM,
+      // model: 'wastonx',
+      // model: 'gemini',
     });
 
     if (data?.data) {
@@ -650,7 +661,30 @@ const ESGReportGenerator: React.FC = () => {
             onChange={(e) => setContent(e.target.value)}
             className="w-[100%] mb-[10px] text-white"
           />
-          <Button onClick={handleSendPrompt}>提交</Button>
+          <div className="flex gap-2">
+            <Select
+              value={selectedLLM}
+              onValueChange={(value) => {
+                setSelectedLLM(value);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="選擇LLM模型" />
+              </SelectTrigger>
+              <SelectContent>
+                {LLM_MODELS.map((model) => (
+                  <SelectItem
+                    key={model.id}
+                    value={model.id}
+                    disabled={model.disabled}
+                  >
+                    {model.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button onClick={handleSendPrompt}>提交</Button>
+          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* 公司基本資料 */}
