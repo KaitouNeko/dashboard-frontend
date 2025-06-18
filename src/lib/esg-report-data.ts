@@ -32,6 +32,8 @@ export interface ESGReportSixPages {
     description: string;
     foundedYear: number;
     employeeCount: number;
+    femaleEmployeePercentage?: number; // 女性員工比例
+    employeeTurnoverRate?: number; // 員工流動率
     headquarters: string;
     industry: string;
     mission: string;
@@ -93,17 +95,33 @@ export interface ESGReportSixPages {
       renewablePercentage: number; // 再生能源比例 (%)
       wasteReduction: number; // 廢棄物減少 (噸)
       waterSaved: number; // 節約用水 (立方米)
+      annualElectricityUsage?: number; // 年度用電量
+      useOfRenewableEnergy?: boolean; // 是否使用再生能源
+      annualWaterUsage?: number; // 年用水量
+      wasteSeparationAndRecycling?: boolean; // 是否進行垃圾分類與回收
+      environmentalCertifications?: boolean; // 是否取得環保相關證書
     };
     socialMetrics: {
       communityBeneficiaries: number; // 社區受益人數
       employeeVolunteerHours: number; // 員工志工時數
       diversityScore: number; // 多元化評分 (0-100)
       trainingHours: number; // 每位員工培訓時數
+      femaleEmployeePercentage?: number; // 女性員工比例
+      employeeTurnoverRate?: number; // 員工流動率
+      totalEmployees?: number; // 員工總數
+      averageTrainingHoursPerEmployee?: number; // 平均培訓時數
+      participationInCommunityActivities?: boolean; // 是否參與社區活動
     };
     governanceMetrics: {
       transparencyScore: number; // 透明度評分 (0-100)
       ethicsTraining: number; // 道德培訓完成率 (%)
       riskAssessment: number; // 風險評估完整性 (0-100)
+      presenceOfCompanyRulesOrOperationsPolicy?: boolean; // 是否有公司章程或營運制度
+      responsiblePersonForFinanceOrRisk?: boolean; // 是否有負責帳務或風險的專責人員
+      regularInternalMeetingsHeld?: boolean; // 是否有固定內部會議
+      salaryAndPromotionPolicyInPlace?: boolean; // 是否有薪資與升遷制度
+      transparencyInMajorCompanyPolicies?: boolean; // 是否有公開重大政策
+      ESGOrSustainabilityOfficerOrDepartmentInPlace?: boolean; // 是否設立ESG或永續負責單位
     };
     yearOnYearComparison: {
       categories: string[];
@@ -193,6 +211,8 @@ export const generateSampleESGReportSixPagesData = (
       description: `${companyName}成立於2005年，是台灣領先的永續能源解決方案提供商。我們專注於開發創新環保技術，提供企業全方位的ESG諮詢服務及綠色能源解決方案。憑藉堅實的技術基礎與專業團隊，我們協助客戶實現永續經營目標，為環境與社會創造長遠價值。`,
       foundedYear: 2005,
       employeeCount: Math.round(350 * socialFactor),
+      femaleEmployeePercentage: Math.round(30 * socialFactor),
+      employeeTurnoverRate: Math.round(10 * socialFactor),
       headquarters: "台北市內湖區堤頂大道二段93號",
       industry: "永續能源與環保科技",
       mission: "透過創新科技促進永續發展，打造更美好的未來。",
@@ -347,18 +367,34 @@ export const generateSampleESGReportSixPagesData = (
         energySaved: Math.round(720000 * energyFactor), // 節約能源 (度)
         renewablePercentage: renewablePercentage, // 再生能源比例 (%)
         wasteReduction: Math.round(45 * energyFactor), // 廢棄物減少 (噸)
-        waterSaved: Math.round(3500 * energyFactor) // 節約用水 (立方米)
+        waterSaved: Math.round(3500 * energyFactor), // 節約用水 (立方米)
+        annualElectricityUsage: Math.round(800000 * energyFactor), // 年度用電量
+        useOfRenewableEnergy: true, // 是否使用再生能源
+        annualWaterUsage: Math.round(100000 * energyFactor), // 年用水量
+        wasteSeparationAndRecycling: true, // 是否進行垃圾分類與回收
+        environmentalCertifications: true // 是否取得環保相關證書
       },
       socialMetrics: {
         communityBeneficiaries: Math.round(2800 * socialFactor), // 社區受益人數
         employeeVolunteerHours: Math.round(1250 * socialFactor), // 員工志工時數
         diversityScore: Math.round(78 * socialFactor), // 多元化評分 (0-100)
-        trainingHours: Math.round(32 * socialFactor) // 每位員工培訓時數
+        trainingHours: Math.round(32 * socialFactor), // 每位員工培訓時數
+        femaleEmployeePercentage: Math.round(30 * socialFactor), // 女性員工比例
+        employeeTurnoverRate: Math.round(10 * socialFactor), // 員工流動率
+        totalEmployees: Math.round(350 * socialFactor), // 員工總數
+        averageTrainingHoursPerEmployee: Math.round(32 * socialFactor), // 平均培訓時數
+        participationInCommunityActivities: true // 是否參與社區活動
       },
       governanceMetrics: {
         transparencyScore: Math.round(85 * governanceFactor), // 透明度評分 (0-100)
         ethicsTraining: Math.round(96 * governanceFactor), // 道德培訓完成率 (%)
-        riskAssessment: Math.round(82 * governanceFactor) // 風險評估完整性 (0-100)
+        riskAssessment: Math.round(82 * governanceFactor), // 風險評估完整性 (0-100)
+        presenceOfCompanyRulesOrOperationsPolicy: true, // 是否有公司章程或營運制度
+        responsiblePersonForFinanceOrRisk: true, // 是否有負責帳務或風險的專責人員
+        regularInternalMeetingsHeld: true, // 是否有固定內部會議
+        salaryAndPromotionPolicyInPlace: true, // 是否有薪資與升遷制度
+        transparencyInMajorCompanyPolicies: true, // 是否有公開重大政策
+        ESGOrSustainabilityOfficerOrDepartmentInPlace: true // 是否設立ESG或永續負責單位
       },
       yearOnYearComparison: {
         categories: ["碳排放量", "能源使用", "廢棄物產生", "用水量", "永續投資"],

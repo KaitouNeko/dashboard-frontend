@@ -502,117 +502,105 @@ const TableOfContentsPage = ({ data }: { data: ESGReportSixPages }) => {
 
 // 公司簡介頁元件
 const CompanyProfilePage = ({ data }: { data: ESGReportSixPages }) => {
+  // 主色
+  const colorMain = '#2563eb'; // 藍色
+  const colorGreen = '#16a34a'; // 綠色
+  const cardStyle = {
+    background: '#fff',
+    borderRadius: '12px',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+    padding: '24px',
+    marginBottom: '24px',
+    border: '1px solid #F0F1F3',
+  };
   return (
-    <div className="page min-h-[297mm] p-8 border-b border-gray-200">
-      <h1 className="text-3xl font-bold mb-6 text-center">公司簡介</h1>
-
-      <div className="space-y-6">
-        {/* 公司描述 */}
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <p className="text-lg leading-relaxed">
-            {data.companyProfile.description}
-          </p>
+    <div className="page min-h-[297mm] p-10 border-b border-gray-200" style={{ background: '#FAFAFA' }}>
+      <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#222' }}>公司簡介</h1>
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ ...cardStyle, marginBottom: 32 }}>
+          <p style={{ color: '#444', fontSize: '1.08rem', lineHeight: 1.7 }}>{data.companyProfile.description}</p>
         </div>
-
-        {/* 基本資訊和企業願景與使命 - 使用 flexbox 代替 grid */}
-        <div className="flex gap-6">
-          <div className="flex-1 bg-blue-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4 text-blue-800">
-              基本資訊
-            </h2>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="font-medium">成立年份</span>
+        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+          {/* 基本資訊 */}
+          <div style={{ ...cardStyle, flex: 1, minWidth: 280 }}>
+            <div style={{ fontWeight: 600, fontSize: '1.1rem', color: colorMain, marginBottom: 16 }}>基本資訊</div>
+            <div style={{ color: '#222', fontSize: '1rem', display: 'grid', rowGap: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>成立年份</span>
                 <span>{data.companyProfile.foundedYear}年</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium">員工人數</span>
-                <span>
-                  {data.companyProfile.employeeCount.toLocaleString()}人
-                </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>員工人數</span>
+                <span>{data.companyProfile.employeeCount.toLocaleString()}人</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium">總部位置</span>
+              {data.companyProfile.femaleEmployeePercentage !== undefined && (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>女性員工比例</span>
+                  <span style={{ color: colorMain, fontWeight: 600 }}>{data.companyProfile.femaleEmployeePercentage}%</span>
+                </div>
+              )}
+              {data.companyProfile.employeeTurnoverRate !== undefined && (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>員工流動率</span>
+                  <span style={{ color: colorMain, fontWeight: 600 }}>{data.companyProfile.employeeTurnoverRate}%</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>總部位置</span>
                 <span>{data.companyProfile.headquarters}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium">產業類別</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>產業類別</span>
                 <span>{data.companyProfile.industry}</span>
               </div>
               {data.companyProfile.keyFinancials && (
                 <>
-                  <div className="flex justify-between">
-                    <span className="font-medium">
-                      年營收 ({data.companyProfile.keyFinancials.year})
-                    </span>
-                    <span>
-                      {data.companyProfile.keyFinancials.revenue.toLocaleString()}{' '}
-                      萬元
-                    </span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>年營收 ({data.companyProfile.keyFinancials.year})</span>
+                    <span style={{ color: colorGreen, fontWeight: 700 }}>{data.companyProfile.keyFinancials.revenue.toLocaleString()} 萬元</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">
-                      年度淨利 ({data.companyProfile.keyFinancials.year})
-                    </span>
-                    <span>
-                      {data.companyProfile.keyFinancials.profit.toLocaleString()}{' '}
-                      萬元
-                    </span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>年度淨利 ({data.companyProfile.keyFinancials.year})</span>
+                    <span style={{ color: colorGreen, fontWeight: 700 }}>{data.companyProfile.keyFinancials.profit.toLocaleString()} 萬元</span>
                   </div>
                 </>
               )}
             </div>
           </div>
-
           {/* 企業願景與使命 */}
-          <div className="flex-1 bg-green-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4 text-green-800">
-              企業願景與使命
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-medium text-green-700 mb-2">願景</h3>
-                <p className="text-sm">{data.companyProfile.vision}</p>
-              </div>
-              <div>
-                <h3 className="font-medium text-green-700 mb-2">使命</h3>
-                <p className="text-sm">{data.companyProfile.mission}</p>
-              </div>
+          <div style={{ ...cardStyle, flex: 1, minWidth: 280 }}>
+            <div style={{ fontWeight: 600, fontSize: '1.1rem', color: colorGreen, marginBottom: 16 }}>企業願景與使命</div>
+            <div style={{ color: '#222', fontSize: '1rem', marginBottom: 8 }}>
+              <div style={{ fontWeight: 500, color: colorGreen, marginBottom: 4 }}>願景</div>
+              <div style={{ color: '#444', marginBottom: 12 }}>{data.companyProfile.vision}</div>
+              <div style={{ fontWeight: 500, color: colorGreen, marginBottom: 4 }}>使命</div>
+              <div style={{ color: '#444' }}>{data.companyProfile.mission}</div>
             </div>
           </div>
         </div>
-
         {/* 核心價值 */}
-        <div
-          className="bg-purple-50 p-6 rounded-lg"
-          style={{ backgroundColor: '#faf5ff', border: '1px solid #e9d5ff' }}
-        >
-          <h2
-            className="text-xl font-semibold mb-4 text-purple-800"
-            style={{ color: '#6b21a8' }}
-          >
-            核心價值
-          </h2>
-          <div
-            style={{
-              textAlign: 'center',
-              fontFamily:
-                "'Noto Sans TC', 'Microsoft JhengHei', '思源黑體', sans-serif",
-            }}
-          >
-            {data.companyProfile.coreValues.map((value, index) => (
-              <div
-                key={index}
-                style={{
-                  fontSize: '1rem',
-                  lineHeight: '1.6',
-                  color: '#7c3aed',
-                  fontWeight: '500',
-                  marginBottom: '0.75rem',
-                  padding: '0.5rem 0',
-                }}
-              >
-                ✦ {value}
+        <div style={{ ...cardStyle, marginTop: 32 }}>
+          <div style={{ fontWeight: 600, fontSize: '1.1rem', color: colorMain, marginBottom: 16 }}>核心價值</div>
+          <div>
+            {data.companyProfile.coreValues.map((value, idx) => (
+              <div key={idx} style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '10px 0',
+                borderBottom: idx !== data.companyProfile.coreValues.length - 1 ? '1px solid #F0F1F3' : 'none',
+              }}>
+                <span style={{
+                  color: colorMain,
+                  fontSize: '1.2rem',
+                  marginRight: 16,
+                  flexShrink: 0,
+                }}>✦</span>
+                <span style={{
+                  color: '#222',
+                  fontWeight: 500,
+                  fontSize: '1.08rem',
+                  letterSpacing: 1,
+                }}>{value}</span>
               </div>
             ))}
           </div>
@@ -624,178 +612,98 @@ const CompanyProfilePage = ({ data }: { data: ESGReportSixPages }) => {
 
 // ESG永續目標頁元件
 const SustainabilityGoalsPage = ({ data }: { data: ESGReportSixPages }) => {
+  // 目標卡片樣式
+  const cardStyle = {
+    background: '#fff',
+    borderRadius: '12px',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+    padding: '24px',
+    marginBottom: '24px',
+    border: '1px solid #F0F1F3',
+  };
+  // 標籤樣式（移除底色）
+  const tagStyle = {
+    background: 'transparent', // 無底色
+    color: '#6B7280',
+    fontSize: '0.98rem',
+    borderRadius: '8px',
+    padding: '2px 10px',
+    fontWeight: 500,
+    marginLeft: 8,
+    border: 'none',
+    boxShadow: 'none',
+    letterSpacing: 0.5,
+  };
   return (
     <>
-      <div className="page min-h-[297mm] p-8 border-b border-gray-200">
-        <h1 className="text-3xl font-bold mb-6 text-center">ESG永續目標</h1>
-
+      <div className="page min-h-[297mm] p-10 border-b border-gray-200" style={{ background: '#FAFAFA' }}>
+        <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#222' }}>ESG永續目標</h1>
         {/* 概述 */}
-        <div className="bg-gray-50 p-6 rounded-lg mb-8">
-          <p className="text-lg leading-relaxed">
-            {data.sustainabilityGoals.overview}
-          </p>
+        <div className="p-4 rounded-lg mb-6" style={{ background: '#F7F7FA', color: '#666', fontSize: '1.05rem' }}>
+          <p>{data.sustainabilityGoals.overview}</p>
         </div>
-
         {/* SDG貢獻目標 */}
-        <div className="bg-blue-50 p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-blue-800">
-            聯合國永續發展目標 (SDGs) 貢獻
-          </h2>
-          <div
-            style={{
-              textAlign: 'center',
-              fontSize: '1.1rem',
-              lineHeight: '1.8',
-              color: '#1e40af',
-              fontWeight: '600',
-              fontFamily:
-                "'Noto Sans TC', 'Microsoft JhengHei', '思源黑體', sans-serif",
-            }}
-          >
-            SDG {data.sustainabilityGoals.sdgContributions.join(' • SDG ')}
-          </div>
+        <div className="p-4 rounded-lg mb-8" style={{ background: '#F7F7FA', color: '#444', fontSize: '1rem' }}>
+          <div style={{ fontWeight: 600 }}>聯合國永續發展目標 (SDGs) 貢獻</div>
+          <div style={{ marginTop: 8, letterSpacing: 1 }}>{data.sustainabilityGoals.sdgContributions.map((sdg, i) => `SDG ${sdg}`).join('、')}</div>
         </div>
-
-        {/* ESG目標 */}
-        <div className="grid grid-cols-1 gap-8">
-          {/* 環境目標 */}
-          <div className="bg-green-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4 text-green-800">
-              環境目標 (E)
-            </h2>
-            <div className="space-y-6">
-              {data.sustainabilityGoals.environmentalGoals.map(
-                (goal, index) => (
-                  <div
-                    key={index}
-                    className="bg-white p-4 rounded-lg shadow-sm"
-                  >
-                    <div style={{ marginBottom: '0.75rem' }}>
-                      <h3
-                        className="font-medium text-green-700"
-                        style={{ marginBottom: '0.5rem' }}
-                      >
-                        {goal.title}
-                      </h3>
-                      <div
-                        style={{
-                          textAlign: 'right',
-                          fontSize: '0.875rem',
-                          color: '#166534',
-                          fontWeight: '500',
-                        }}
-                      >
-                        目標年: {goal.targetYear}
-                      </div>
-                    </div>
-                    <p className="text-gray-700 mb-3">{goal.description}</p>
-                    <div>
-                      <span className="text-sm font-medium mb-1 block">
-                        完成進度:
-                      </span>
-                      <ProgressBar
-                        value={goal.currentProgress}
-                        color="#4ade80"
-                      />
-                    </div>
-                  </div>
-                )
-              )}
+        {/* E目標 */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ fontWeight: 600, fontSize: '1.15rem', color: '#222', marginBottom: 16 }}>環境目標 (E)</div>
+          {data.sustainabilityGoals.environmentalGoals.map((goal, idx) => (
+            <div key={idx} style={cardStyle}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ fontWeight: 500, fontSize: '1.05rem', color: '#222' }}>{goal.title}</div>
+                <span style={tagStyle}>目標年：{goal.targetYear}</span>
+              </div>
+              <div style={{ color: '#666', fontSize: '0.98rem', marginBottom: 12 }}>{goal.description}</div>
+              <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontSize: '0.85rem', color: '#888' }}>完成進度</div>
+                  <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#222' }}>{goal.currentProgress}%</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* S目標 */}
+      <div className="page min-h-[297mm] p-10 border-b border-gray-200" style={{ background: '#FAFAFA' }}>
+        <div style={{ fontWeight: 600, fontSize: '1.15rem', color: '#222', marginBottom: 16 }}>社會目標 (S)</div>
+        {data.sustainabilityGoals.socialGoals.map((goal, idx) => (
+          <div key={idx} style={cardStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div style={{ fontWeight: 500, fontSize: '1.05rem', color: '#222' }}>{goal.title}</div>
+              <span style={tagStyle}>目標年：{goal.targetYear}</span>
+            </div>
+            <div style={{ color: '#666', fontSize: '0.98rem', marginBottom: 12 }}>{goal.description}</div>
+            <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '0.85rem', color: '#888' }}>完成進度</div>
+                <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#222' }}>{goal.currentProgress}%</div>
+              </div>
             </div>
           </div>
-        </div>
+        ))}
       </div>
-      <div className="page min-h-[297mm] p-8 border-b border-gray-200">
-        {/* 社會目標 */}
-        <div
-          className="bg-purple-50 p-6 rounded-lg break-inside-avoid"
-          style={{ backgroundColor: '#faf5ff', border: '1px solid #e9d5ff' }}
-        >
-          <h2
-            className="text-xl font-semibold mb-4 text-purple-800"
-            style={{ color: '#6b21a8' }}
-          >
-            社會目標 (S)
-          </h2>
-          <div className="space-y-6">
-            {data.sustainabilityGoals.socialGoals.map((goal, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 rounded-lg shadow-sm break-inside-avoid"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #f3f4f6',
-                }}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3
-                    className="font-medium text-purple-700"
-                    style={{ color: '#7c3aed' }}
-                  >
-                    {goal.title}
-                  </h3>
-                  <span
-                    className="text-sm text-purple-800 px-2 py-1 rounded"
-                    style={{ color: '#6b21a8' }}
-                  >
-                    目標年: {goal.targetYear}
-                  </span>
-                </div>
-                <p className="text-gray-700 mb-3" style={{ color: '#374151' }}>
-                  {goal.description}
-                </p>
-                <div>
-                  <span
-                    className="text-sm font-medium mb-1 block"
-                    style={{ color: '#374151' }}
-                  >
-                    完成進度:
-                  </span>
-                  <ProgressBar value={goal.currentProgress} color="#a78bfa" />
-                </div>
+      {/* G目標 */}
+      <div className="page min-h-[297mm] p-10 border-b border-gray-200" style={{ background: '#FAFAFA' }}>
+        <div style={{ fontWeight: 600, fontSize: '1.15rem', color: '#222', marginBottom: 16 }}>治理目標 (G)</div>
+        {data.sustainabilityGoals.governanceGoals.map((goal, idx) => (
+          <div key={idx} style={cardStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div style={{ fontWeight: 500, fontSize: '1.05rem', color: '#222' }}>{goal.title}</div>
+              <span style={tagStyle}>目標年：{goal.targetYear}</span>
+            </div>
+            <div style={{ color: '#666', fontSize: '0.98rem', marginBottom: 12 }}>{goal.description}</div>
+            <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '0.85rem', color: '#888' }}>完成進度</div>
+                <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#222' }}>{goal.currentProgress}%</div>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="page min-h-[297mm] p-8 border-b border-gray-200">
-        {/* 治理目標 */}
-        <div className="bg-orange-50 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4 text-orange-800">
-            治理目標 (G)
-          </h2>
-          <div className="space-y-6">
-            {data.sustainabilityGoals.governanceGoals.map((goal, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
-                <div style={{ marginBottom: '0.75rem' }}>
-                  <h3
-                    className="font-medium text-orange-700"
-                    style={{ marginBottom: '0.5rem' }}
-                  >
-                    {goal.title}
-                  </h3>
-                  <div
-                    style={{
-                      textAlign: 'right',
-                      fontSize: '0.875rem',
-                      color: '#c2410c',
-                      fontWeight: '500',
-                    }}
-                  >
-                    目標年: {goal.targetYear}
-                  </div>
-                </div>
-                <p className="text-gray-700 mb-3">{goal.description}</p>
-                <div>
-                  <span className="text-sm font-medium mb-1 block">
-                    完成進度:
-                  </span>
-                  <ProgressBar value={goal.currentProgress} color="#fb923c" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
     </>
   );
@@ -803,34 +711,6 @@ const SustainabilityGoalsPage = ({ data }: { data: ESGReportSixPages }) => {
 
 // 永續項目頁元件
 const SustainabilityProjectsPage = ({ data }: { data: ESGReportSixPages }) => {
-  // 專案狀態標籤顏色對應
-  const statusColors = {
-    planning: 'bg-blue-100 text-blue-800',
-    'in-progress': 'bg-yellow-100 text-yellow-800',
-    completed: 'bg-green-100 text-green-800',
-  };
-
-  // 專案類型顏色對應
-  const categoryColors = {
-    environmental: 'bg-green-50 border-green-200',
-    social: 'bg-purple-50 border-purple-200',
-    governance: 'bg-orange-50 border-orange-200',
-  };
-
-  // 專案類型中文名稱對應
-  const categoryNames = {
-    environmental: '環境永續',
-    social: '社會責任',
-    governance: '公司治理',
-  };
-
-  // 專案狀態中文名稱對應
-  const statusNames = {
-    planning: '規劃中',
-    'in-progress': '執行中',
-    completed: '已完成',
-  };
-
   // 格式化日期
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('zh-TW', {
@@ -841,7 +721,7 @@ const SustainabilityProjectsPage = ({ data }: { data: ESGReportSixPages }) => {
   };
 
   // 分頁配置 - 每頁最多顯示的項目數
-  const ITEMS_PER_PAGE = 3; // 可以根據需要調整，建議2-3個項目一頁
+  const ITEMS_PER_PAGE = 3;
   const projects = data.sustainabilityProjects.projects;
 
   // 將項目分組 - 智能分頁：特定項目開始新頁
@@ -851,211 +731,123 @@ const SustainabilityProjectsPage = ({ data }: { data: ESGReportSixPages }) => {
 
   for (let i = 0; i < projects.length; i++) {
     const project = projects[i];
-
-    // 如果是"數位轉型減碳計畫"且當前頁不為空，則開始新頁
     if (project.name.includes('數位轉型') && currentPage.length > 0) {
       projectPages.push(currentPage);
       currentPage = [project];
       currentPageCount = 1;
-    }
-    // 如果當前頁已滿，開始新頁
-    else if (currentPageCount >= ITEMS_PER_PAGE) {
+    } else if (currentPageCount >= ITEMS_PER_PAGE) {
       projectPages.push(currentPage);
       currentPage = [project];
       currentPageCount = 1;
-    }
-    // 否則添加到當前頁
-    else {
+    } else {
       currentPage.push(project);
       currentPageCount++;
     }
   }
-
-  // 添加最後一頁
   if (currentPage.length > 0) {
     projectPages.push(currentPage);
   }
+
+  // 狀態中文
+  const statusNames = {
+    planning: '規劃中',
+    'in-progress': '執行中',
+    completed: '已完成',
+  };
+
+  // 狀態顏色
+  const statusColor = {
+    planning: '#64748b', // slate-500
+    'in-progress': '#eab308', // amber-500
+    completed: '#16a34a', // green-600
+  };
 
   return (
     <>
       {projectPages.map((pageProjects, pageIndex) => (
         <div
           key={pageIndex}
-          className="page min-h-[297mm] p-8 border-b border-gray-200"
+          className="page min-h-[297mm] p-10 border-b border-gray-200"
+          style={{ background: '#FAFAFA' }}
         >
           {/* 只在第一頁顯示標題和概述 */}
           {pageIndex === 0 && (
             <>
-              <h1 className="text-3xl font-bold mb-3 text-center">永續項目</h1>
-
-              {/* 概述 - 縮小高度 */}
+              <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#222' }}>
+                永續項目
+              </h1>
               <div
-                className="bg-gray-50 p-3 rounded-lg mb-4"
-                style={{ fontSize: '0.9rem', lineHeight: '1.4' }}
+                className="p-4 rounded-lg mb-6"
+                style={{ background: '#F7F7FA', color: '#666', fontSize: '1.05rem' }}
               >
                 <p>{data.sustainabilityProjects.overview}</p>
               </div>
             </>
           )}
-
-          {/* 後續頁面的標題 */}
           {pageIndex > 0 && (
-            <h1 className="text-3xl font-bold mb-3 text-center">
+            <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#222' }}>
               永續項目 (續)
             </h1>
           )}
-
-          {/* 項目列表 - 減少間距 */}
-          <div className="space-y-2">
+          <div>
             {pageProjects.map((project, index) => (
               <div
                 key={pageIndex * ITEMS_PER_PAGE + index}
-                className={`p-3 rounded-lg border-2 ${
-                  categoryColors[project.category]
-                } break-inside-avoid`}
-                style={{ marginBottom: '0.5rem' }}
+                style={{
+                  background: '#fff',
+                  borderRadius: '12px',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                  padding: '24px',
+                  marginBottom: '24px',
+                  border: '1px solid #F0F1F3',
+                }}
               >
-                {/* 標題區域 - 更緊湊 */}
-                <div style={{ marginBottom: '0.5rem' }}>
-                  <h2
-                    className="text-lg font-semibold"
-                    style={{ marginBottom: '0.25rem', fontSize: '1rem' }}
-                  >
-                    {project.name}
-                  </h2>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '0.25rem',
-                      marginBottom: '0.25rem',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <span
-                      className="text-xs px-1 py-0.5 rounded"
-                      style={{
-                        backgroundColor:
-                          project.category === 'environmental'
-                            ? '#dcfce7'
-                            : project.category === 'social'
-                            ? '#f3e8ff'
-                            : '#fed7aa',
-                        color:
-                          project.category === 'environmental'
-                            ? '#166534'
-                            : project.category === 'social'
-                            ? '#6b21a8'
-                            : '#c2410c',
-                        fontSize: '0.7rem',
-                      }}
-                    >
-                      {categoryNames[project.category]}
-                    </span>
-                    <span
-                      className="text-xs px-1 py-0.5 rounded"
-                      style={{
-                        backgroundColor:
-                          project.status === 'completed'
-                            ? '#dcfce7'
-                            : project.status === 'in-progress'
-                            ? '#fef3c7'
-                            : '#dbeafe',
-                        color:
-                          project.status === 'completed'
-                            ? '#166534'
-                            : project.status === 'in-progress'
-                            ? '#a16207'
-                            : '#1e40af',
-                        fontSize: '0.7rem',
-                      }}
-                    >
-                      {statusNames[project.status]}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      textAlign: 'right',
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                    }}
-                  >
-                    開始日期: {formatDate(project.startDate)}
-                  </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                  <div style={{ fontWeight: 600, fontSize: '1.15rem', color: '#222' }}>{project.name}</div>
+                  <span style={{
+                    background: 'transparent', // 無底色
+                    color: statusColor[project.status],
+                    fontSize: '0.98rem',
+                    borderRadius: '8px',
+                    padding: '2px 10px',
+                    fontWeight: 700,
+                    marginLeft: 8,
+                    border: 'none',
+                    boxShadow: 'none',
+                    letterSpacing: 0.5,
+                  }}>
+                    {statusNames[project.status]}
+                  </span>
                 </div>
-
-                {/* 描述區域 - 縮小字體 */}
-                <div
-                  className="bg-white p-2 rounded-lg mb-2"
-                  style={{ fontSize: '0.85rem', lineHeight: '1.3' }}
-                >
-                  <p className="text-gray-700">{project.description}</p>
+                <div style={{ color: '#666', fontSize: '0.98rem', margin: '12px 0 18px 0' }}>
+                  {project.description}
                 </div>
-
-                {/* 關鍵指標 - 更緊湊的橫向佈局 */}
-                {project.keyMetrics && (
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <div
-                      className="bg-blue-50 p-2 rounded-lg"
-                      style={{ flex: '1', textAlign: 'center' }}
-                    >
-                      <div
-                        style={{
-                          fontSize: '0.7rem',
-                          color: '#1e40af',
-                          fontWeight: '500',
-                          marginBottom: '0.125rem',
-                        }}
-                      >
-                        投資金額
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '1.1rem',
-                          fontWeight: 'bold',
-                          color: '#1e40af',
-                        }}
-                      >
-                        {project.keyMetrics.investmentAmount.toLocaleString()}{' '}
-                        萬元
-                      </div>
-                    </div>
-                    <div
-                      className="bg-teal-50 p-2 rounded-lg"
-                      style={{ flex: '1', textAlign: 'center' }}
-                    >
-                      <div
-                        style={{
-                          fontSize: '0.7rem',
-                          color: '#0f766e',
-                          fontWeight: '500',
-                          marginBottom: '0.125rem',
-                        }}
-                      >
-                        預期影響
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '0.8rem',
-                          color: '#0f766e',
-                          lineHeight: '1.2',
-                        }}
-                      >
-                        {project.keyMetrics.estimatedImpact}
-                      </div>
+                <div style={{ display: 'flex', gap: '32px', marginBottom: '8px' }}>
+                  <div>
+                    <div style={{ fontSize: '0.85rem', color: '#888' }}>投資金額</div>
+                    <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#222' }}>
+                      {project.keyMetrics?.investmentAmount?.toLocaleString()} 萬元
                     </div>
                   </div>
-                )}
+                  <div>
+                    <div style={{ fontSize: '0.85rem', color: '#888' }}>預期影響</div>
+                    <div style={{ fontWeight: 500, fontSize: '1rem', color: '#444' }}>
+                      {project.keyMetrics?.estimatedImpact}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right', fontSize: '0.85rem', color: '#AAA', marginTop: '8px' }}>
+                  開始日期：{formatDate(project.startDate)}
+                </div>
               </div>
             ))}
           </div>
-
-          {/* 頁面底部顯示頁碼 */}
           <div
             style={{
               marginTop: 'auto',
               textAlign: 'center',
-              fontSize: '0.8rem',
-              color: '#6b7280',
+              fontSize: '0.9rem',
+              color: '#AAA',
               paddingTop: '1rem',
             }}
           >
@@ -1069,382 +861,122 @@ const SustainabilityProjectsPage = ({ data }: { data: ESGReportSixPages }) => {
 
 // 永續項目執行結果頁元件
 const ProjectResultsPage = ({ data }: { data: ESGReportSixPages }) => {
-  // 圖表數據 - 年度比較
-  const yearComparisonData = {
-    labels: data.projectResults.yearOnYearComparison.categories,
-    datasets: [
-      {
-        label: '去年基準',
-        data: data.projectResults.yearOnYearComparison.previousYearData,
-        backgroundColor: 'rgba(96, 165, 250, 0.5)', // blue
-        borderColor: 'rgba(59, 130, 246, 1)',
-        borderWidth: 1,
-      },
-      {
-        label: '今年表現',
-        data: data.projectResults.yearOnYearComparison.currentYearData,
-        backgroundColor: 'rgba(74, 222, 128, 0.5)', // green
-        borderColor: 'rgba(34, 197, 94, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // 圖表選項
-  const chartOptions = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: (value: any) => `${value}%`,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        position: 'top' as const,
-        labels: {
-          font: {
-            family:
-              "'Noto Sans TC', 'Microsoft JhengHei', '思源黑體', sans-serif",
-            size: 12,
-          },
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: (context: any) =>
-            `${context.dataset.label}: ${context.parsed.y}%`,
-        },
-      },
-    },
-  };
-
+  // 主色
+  const colorE = '#16a34a'; // 綠
+  const colorS = '#7c3aed'; // 紫
+  const colorG = '#ea580c'; // 橘
   return (
-    <>
-      {/* 第一頁：概述 + 圖表 + 環境績效 */}
-      <div className="page min-h-[297mm] p-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          永續項目執行結果
-        </h1>
-
-        {/* 概述 */}
-        <div className="bg-gray-50 p-6 rounded-lg mb-8">
-          <p className="text-lg leading-relaxed">
-            {data.projectResults.overview}
-          </p>
+    <div className="page min-h-[297mm] p-10 flex flex-col" style={{ background: '#FAFAFA' }}>
+      {/* 三大績效指標卡片區塊 */}
+      <div style={{
+        display: 'flex',
+        gap: 20,
+        marginBottom: 12,
+        breakInside: 'avoid',
+        flexWrap: 'wrap',
+      }}>
+        {/* 環境績效 (E) */}
+        <div style={{
+          flex: 1,
+          minWidth: 240,
+          background: '#fff',
+          borderRadius: 12,
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+          padding: 16,
+          border: '1px solid #F0F1F3',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: 0,
+        }}>
+          <div style={{ color: colorE, fontWeight: 700, fontSize: '1.15rem', marginBottom: 12 }}>環境績效 (E)</div>
+          {[
+            { label: '碳減排量 (噸)', value: data.projectResults.environmentalMetrics.carbonReduction },
+            { label: '節約能源 (度)', value: data.projectResults.environmentalMetrics.energySaved },
+            { label: '再生能源比例', value: data.projectResults.environmentalMetrics.renewablePercentage + '%' },
+            { label: '廢棄物減少 (噸)', value: data.projectResults.environmentalMetrics.wasteReduction },
+            { label: '節約用水 (立方米)', value: data.projectResults.environmentalMetrics.waterSaved },
+          ].map((item, idx) => (
+            <div key={idx} style={{ marginBottom: 8, textAlign: 'center' }}>
+              <div style={{ color: colorE, fontWeight: 700, fontSize: '1.3rem' }}>{item.value}</div>
+              <div style={{ color: '#666', fontSize: '0.98rem' }}>{item.label}</div>
+            </div>
+          ))}
         </div>
-
-        {/* 年度比較圖表 */}
-        <div className="bg-blue-50 p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-blue-800">
-            年度績效比較
-          </h2>
-          <div className="chart-container h-60 mb-4">
-            <Bar
-              data={yearComparisonData}
-              options={{
-                ...chartOptions,
-                maintainAspectRatio: false,
-                responsive: true,
-                plugins: {
-                  ...chartOptions.plugins,
-                  tooltip: {
-                    ...chartOptions.plugins.tooltip,
-                    enabled: true,
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    titleColor: '#333',
-                    bodyColor: '#333',
-                    titleFont: {
-                      family:
-                        "'Noto Sans TC', 'Microsoft JhengHei', '思源黑體', sans-serif",
-                      size: 14,
-                      weight: 'bold',
-                    },
-                    bodyFont: {
-                      family:
-                        "'Noto Sans TC', 'Microsoft JhengHei', '思源黑體', sans-serif",
-                      size: 13,
-                    },
-                    padding: 10,
-                    boxPadding: 6,
-                    borderColor: '#ddd',
-                    borderWidth: 1,
-                  },
-                },
-              }}
-            />
-          </div>
-          <p className="text-sm text-gray-600 text-center">
-            註: 基準年度 = 100%，低於100%表示減少，高於100%表示增加
-          </p>
+        {/* 社會績效 (S) */}
+        <div style={{
+          flex: 1,
+          minWidth: 240,
+          background: '#fff',
+          borderRadius: 12,
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+          padding: 16,
+          border: '1px solid #F0F1F3',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: 0,
+        }}>
+          <div style={{ color: colorS, fontWeight: 700, fontSize: '1.15rem', marginBottom: 12 }}>社會績效 (S)</div>
+          {[
+            { label: '社區受益人數 (人)', value: data.projectResults.socialMetrics.communityBeneficiaries },
+            { label: '員工志工時數 (小時)', value: data.projectResults.socialMetrics.employeeVolunteerHours },
+            { label: '多元化評分', value: data.projectResults.socialMetrics.diversityScore + '%' },
+            { label: '女性員工比例', value: data.projectResults.socialMetrics.femaleEmployeePercentage + '%' },
+            { label: '員工流動率', value: data.projectResults.socialMetrics.employeeTurnoverRate + '%' },
+          ].map((item, idx) => (
+            <div key={idx} style={{ marginBottom: 8, textAlign: 'center' }}>
+              <div style={{ color: colorS, fontWeight: 700, fontSize: '1.3rem' }}>{item.value}</div>
+              <div style={{ color: '#666', fontSize: '0.98rem' }}>{item.label}</div>
+            </div>
+          ))}
         </div>
-
-        {/* 環境績效 */}
-        <div className="bg-green-50 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-6 text-green-800 text-center">
-            環境績效 (E)
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.5rem',
-              textAlign: 'center',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#059669',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.annualElectricityUsage.carbonReduction.toLocaleString()}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#065f46' }}>
-                碳減排量 (噸)
-              </div>
+        {/* 治理績效 (G) */}
+        <div style={{
+          flex: 1,
+          minWidth: 240,
+          background: '#fff',
+          borderRadius: 12,
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+          padding: 16,
+          border: '1px solid #F0F1F3',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: 0,
+        }}>
+          <div style={{ color: colorG, fontWeight: 700, fontSize: '1.15rem', marginBottom: 12 }}>治理績效 (G)</div>
+          {[
+            { label: '透明度評分', value: data.projectResults.governanceMetrics.transparencyScore + '%' },
+            { label: '道德培訓完成率', value: data.projectResults.governanceMetrics.ethicsTraining + '%' },
+            { label: '風險評估完整性', value: data.projectResults.governanceMetrics.riskAssessment + '%' },
+          ].map((item, idx) => (
+            <div key={idx} style={{ marginBottom: 8, textAlign: 'center' }}>
+              <div style={{ color: colorG, fontWeight: 700, fontSize: '1.3rem' }}>{item.value}</div>
+              <div style={{ color: '#666', fontSize: '0.98rem' }}>{item.label}</div>
             </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#059669',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.annualWaterUsage.energySaved.toLocaleString()}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#065f46' }}>
-                節約能源 (度)
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#059669',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.environmentalMetrics.renewablePercentage}%
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#065f46' }}>
-                再生能源比例
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#059669',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.environmentalMetrics.wasteReduction.toLocaleString()}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#065f46' }}>
-                廢棄物減少 (噸)
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#059669',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.environmentalMetrics.waterSaved.toLocaleString()}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#065f46' }}>
-                節約用水 (立方米)
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
-
-      {/* 第二頁：社會績效 + 治理績效 + 未來展望 */}
-      <div className="page min-h-[297mm] p-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          永續項目執行結果 (續)
-        </h1>
-
-        {/* 社會績效 */}
-        <div
-          className="bg-purple-50 p-6 rounded-lg break-inside-avoid"
-          style={{
-            backgroundColor: '#faf5ff',
-            border: '1px solid #e9d5ff',
-            marginBottom: '1.5rem',
-          }}
-        >
-          <h2
-            className="text-xl font-semibold mb-6 text-purple-800 text-center"
-            style={{ color: '#6b21a8' }}
-          >
-            社會績效 (S)
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '1.5rem',
-              textAlign: 'center',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#7c3aed',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.socialMetrics.communityBeneficiaries.toLocaleString()}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#581c87' }}>
-                社區受益人數 (人)
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#7c3aed',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.socialMetrics.employeeVolunteerHours.toLocaleString()}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#581c87' }}>
-                員工志工時數 (小時)
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#7c3aed',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.socialMetrics.diversityScore}%
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#581c87' }}>
-                多元化評分
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#7c3aed',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.socialMetrics.trainingHours}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#581c87' }}>
-                員工培訓時數 (小時/人)
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 治理績效 */}
-        <div
-          className="bg-orange-50 p-6 rounded-lg"
-          style={{ marginBottom: '2rem' }}
-        >
-          <h2 className="text-xl font-semibold mb-6 text-orange-800 text-center">
-            治理績效 (G)
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.5rem',
-              textAlign: 'center',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#ea580c',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.governanceMetrics.transparencyScore}%
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#9a3412' }}>
-                透明度評分
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#ea580c',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.governanceMetrics.ethicsTraining}%
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#9a3412' }}>
-                道德培訓完成率
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#ea580c',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {data.projectResults.governanceMetrics.riskAssessment}%
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#9a3412' }}>
-                風險評估完整性
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 未來展望 */}
-        <div className="bg-indigo-50 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4 text-indigo-800">
-            未來展望
-          </h2>
-          <ul className="list-disc pl-5 space-y-2">
-            {data.projectResults.futureOutlook.map((item, index) => (
-              <li key={index} className="text-gray-700">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* 頁尾 */}
-        <footer className="text-center text-gray-500 text-sm mt-12 pt-4 border-t border-gray-200 no-break">
+      {/* 未來展望區塊更緊湊 */}
+      <div style={{
+        background: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+        padding: '14px 16px',
+        marginBottom: 8,
+        border: '1px solid #F0F1F3',
+      }}>
+        <div style={{ fontWeight: 600, fontSize: '1.08rem', color: '#222', marginBottom: 8 }}>未來展望</div>
+        <ul style={{ paddingLeft: 18, color: '#444', fontSize: '0.98rem', marginBottom: 0 }}>
+          {data.projectResults.futureOutlook.map((item, index) => (
+            <li key={index} style={{ marginBottom: 4 }}>{item}</li>
+          ))}
+        </ul>
+      </div>
+      {/* footer 貼底，不分頁 */}
+      <div style={{ marginTop: 'auto' }}>
+        <footer className="text-center text-gray-500 text-sm pt-4 border-t border-gray-200">
           <p>
             本報告依據國際永續標準委員會 (ISSB) 準則與全球報告倡議組織 (GRI)
             標準編製
@@ -1454,7 +986,7 @@ const ProjectResultsPage = ({ data }: { data: ESGReportSixPages }) => {
           </p>
         </footer>
       </div>
-    </>
+    </div>
   );
 };
 
