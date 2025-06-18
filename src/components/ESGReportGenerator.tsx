@@ -532,6 +532,8 @@ const ESGReportGenerator: React.FC = () => {
       // model: 'gemini',
     });
 
+    console.log('data', data);
+
     if (data?.data) {
       const formatData = `${data.data.response
         .replace(/```json/g, '')

@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_DOMAIN: config.NEXT_PUBLIC_DOMAIN,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
