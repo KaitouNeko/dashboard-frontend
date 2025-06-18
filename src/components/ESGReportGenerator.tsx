@@ -217,17 +217,17 @@ const ESGReportGenerator: React.FC = () => {
     }));
   };
 
-  const handleProjectChange = (index: number, field: string, value: any) => {
-    const newProjects = [...formData.projects];
-    newProjects[index] = {
-      ...newProjects[index],
-      [field]: value,
-    };
-    setFormData((prev) => ({
-      ...prev,
-      projects: newProjects,
-    }));
-  };
+  // const handleProjectChange = (index: number, field: string, value: any) => {
+  //   const newProjects = [...formData.projects];
+  //   newProjects[index] = {
+  //     ...newProjects[index],
+  //     [field]: value,
+  //   };
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     projects: newProjects,
+  //   }));
+  // };
 
   const generateReport = async () => {
     setIsGenerating(true);
@@ -306,143 +306,143 @@ const ESGReportGenerator: React.FC = () => {
     setGeneratedData(null);
   };
 
-  // AI建議生成功能
-  const generateAISuggestion = async (projectIndex: number) => {
-    const project = formData.projects[projectIndex];
-    setLoadingAI((prev) => ({ ...prev, [projectIndex]: true }));
+  // // AI建議生成功能
+  // const generateAISuggestion = async (projectIndex: number) => {
+  //   const project = formData.projects[projectIndex];
+  //   setLoadingAI((prev) => ({ ...prev, [projectIndex]: true }));
 
-    // 模擬AI建議生成
-    setTimeout(() => {
-      const suggestions: {
-        [category: string]: { [projectName: string]: string };
-      } = {
-        environmental: {
-          陽光綠能計畫:
-            '本項目致力於推動再生能源發展，透過在企業設施屋頂安裝高效率太陽能發電系統，提升綠色能源使用比例。項目包含系統設計、設備採購、安裝施工及後續維護等完整服務。預期每年可產生約180萬度綠色電力，減少約900噸CO2排放，為企業達成碳中和目標奠定重要基礎。同時透過能源自主供應，降低電力成本並提升能源安全性。',
-          循環經濟示範廠:
-            '建立完整的循環經濟生產模式，將生產過程中產生的副產品與廢棄物重新設計為可利用資源。透過創新的資源回收技術與製程優化，實現廢棄物減量、資源再利用及價值創造的三重效益。項目涵蓋廢料分類系統、再製技術開發、品質控制機制等，目標達成95%以上的資源循環利用率，大幅降低環境負荷並創造新的營收來源。',
-          數位轉型減碳計畫:
-            '運用物聯網、大數據分析及人工智慧技術，建置智慧化能源管理系統，實現生產設備與能耗的即時監控與最佳化調控。透過數據驅動的能源管理，識別節能機會點並自動調整設備運行參數，有效提升能源使用效率。預期可減少15-20%的整體能耗，降低碳排放的同時提升營運效率與競爭力。',
-        },
-        social: {
-          永續人才培育計畫:
-            '建立系統性的永續發展人才培育機制，涵蓋ESG知識、永續技能及創新思維等多元面向。透過內部培訓、外部研習、實務專案及跨部門合作等方式，提升全體員工的永續意識與專業能力。計畫包含線上學習平台、專業認證課程、永續創新競賽等，預期培養100%員工具備永續基本素養，培育50位永續專業人才，為企業永續轉型提供堅實的人力資源基礎。',
-          社區賦能計畫:
-            '秉持企業社會責任精神，投入資源支持在地社區發展，重點關注教育提升、技能培訓及經濟賦能等面向。透過與地方政府、學校及非營利組織合作，提供數位技能課程、創業輔導、獎學金計畫等多元服務。預期每年服務3,000位社區民眾，協助提升就業技能與生活品質，創造企業與社區共榮共好的永續發展模式。',
-          多元共融職場:
-            '打造包容性的工作環境，消除各種形式的歧視與偏見，建立公平公正的人才發展機制。透過多元招募政策、無障礙設施建置、彈性工作安排及友善育兒措施等，支持不同背景員工發揮潛能。定期進行多元共融意識培訓，建立申訴與調解機制，營造互相尊重與支持的企業文化。目標達成管理階層性別比例平衡，身心障礙員工聘用率達法定標準以上。',
-        },
-        governance: {
-          ESG治理制度建置:
-            '建立完善的ESG治理架構，設立ESG委員會並明確其職責與運作機制。制定ESG政策與管理程序，建立風險識別、評估與管控系統，確保永續發展策略的有效執行。透過定期檢討與持續改善，強化董事會對ESG議題的監督功能，並將ESG績效納入高階主管薪酬考核，確保永續承諾的實現。',
-          供應鏈永續管理:
-            '建立供應商ESG評估與管理機制，要求供應商遵循環境保護、勞工權益及誠信經營等標準。透過供應商稽核、能力建設及改善輔導，提升整體供應鏈的永續表現。建置供應商永續評分系統，優先與ESG表現優良的夥伴合作，共同打造負責任的價值鏈。預期100%關鍵供應商通過ESG評估，形成永續供應鏈生態系統。',
-          透明度與揭露強化:
-            '建立透明、及時且完整的ESG資訊揭露機制，依循國際準則編製永續報告書並通過第三方驗證。設置利害關係人溝通平台，定期舉辦說明會與工作坊，收集各方意見並回應關切議題。透過數位化平台即時更新ESG績效資訊，提升資訊透明度與可及性，建立與投資人、客戶及社會大眾的信任關係。',
-        },
-      };
+  //   // 模擬AI建議生成
+  //   setTimeout(() => {
+  //     const suggestions: {
+  //       [category: string]: { [projectName: string]: string };
+  //     } = {
+  //       environmental: {
+  //         陽光綠能計畫:
+  //           '本項目致力於推動再生能源發展，透過在企業設施屋頂安裝高效率太陽能發電系統，提升綠色能源使用比例。項目包含系統設計、設備採購、安裝施工及後續維護等完整服務。預期每年可產生約180萬度綠色電力，減少約900噸CO2排放，為企業達成碳中和目標奠定重要基礎。同時透過能源自主供應，降低電力成本並提升能源安全性。',
+  //         循環經濟示範廠:
+  //           '建立完整的循環經濟生產模式，將生產過程中產生的副產品與廢棄物重新設計為可利用資源。透過創新的資源回收技術與製程優化，實現廢棄物減量、資源再利用及價值創造的三重效益。項目涵蓋廢料分類系統、再製技術開發、品質控制機制等，目標達成95%以上的資源循環利用率，大幅降低環境負荷並創造新的營收來源。',
+  //         數位轉型減碳計畫:
+  //           '運用物聯網、大數據分析及人工智慧技術，建置智慧化能源管理系統，實現生產設備與能耗的即時監控與最佳化調控。透過數據驅動的能源管理，識別節能機會點並自動調整設備運行參數，有效提升能源使用效率。預期可減少15-20%的整體能耗，降低碳排放的同時提升營運效率與競爭力。',
+  //       },
+  //       social: {
+  //         永續人才培育計畫:
+  //           '建立系統性的永續發展人才培育機制，涵蓋ESG知識、永續技能及創新思維等多元面向。透過內部培訓、外部研習、實務專案及跨部門合作等方式，提升全體員工的永續意識與專業能力。計畫包含線上學習平台、專業認證課程、永續創新競賽等，預期培養100%員工具備永續基本素養，培育50位永續專業人才，為企業永續轉型提供堅實的人力資源基礎。',
+  //         社區賦能計畫:
+  //           '秉持企業社會責任精神，投入資源支持在地社區發展，重點關注教育提升、技能培訓及經濟賦能等面向。透過與地方政府、學校及非營利組織合作，提供數位技能課程、創業輔導、獎學金計畫等多元服務。預期每年服務3,000位社區民眾，協助提升就業技能與生活品質，創造企業與社區共榮共好的永續發展模式。',
+  //         多元共融職場:
+  //           '打造包容性的工作環境，消除各種形式的歧視與偏見，建立公平公正的人才發展機制。透過多元招募政策、無障礙設施建置、彈性工作安排及友善育兒措施等，支持不同背景員工發揮潛能。定期進行多元共融意識培訓，建立申訴與調解機制，營造互相尊重與支持的企業文化。目標達成管理階層性別比例平衡，身心障礙員工聘用率達法定標準以上。',
+  //       },
+  //       governance: {
+  //         ESG治理制度建置:
+  //           '建立完善的ESG治理架構，設立ESG委員會並明確其職責與運作機制。制定ESG政策與管理程序，建立風險識別、評估與管控系統，確保永續發展策略的有效執行。透過定期檢討與持續改善，強化董事會對ESG議題的監督功能，並將ESG績效納入高階主管薪酬考核，確保永續承諾的實現。',
+  //         供應鏈永續管理:
+  //           '建立供應商ESG評估與管理機制，要求供應商遵循環境保護、勞工權益及誠信經營等標準。透過供應商稽核、能力建設及改善輔導，提升整體供應鏈的永續表現。建置供應商永續評分系統，優先與ESG表現優良的夥伴合作，共同打造負責任的價值鏈。預期100%關鍵供應商通過ESG評估，形成永續供應鏈生態系統。',
+  //         透明度與揭露強化:
+  //           '建立透明、及時且完整的ESG資訊揭露機制，依循國際準則編製永續報告書並通過第三方驗證。設置利害關係人溝通平台，定期舉辦說明會與工作坊，收集各方意見並回應關切議題。透過數位化平台即時更新ESG績效資訊，提升資訊透明度與可及性，建立與投資人、客戶及社會大眾的信任關係。',
+  //       },
+  //     };
 
-      // 根據項目類別和名稱生成建議
-      let suggestion = '';
-      if (project.category && suggestions[project.category]) {
-        // 嘗試精確匹配項目名稱
-        const exactMatch = suggestions[project.category][project.name];
-        if (exactMatch) {
-          suggestion = exactMatch;
-        } else {
-          // 根據關鍵字匹配
-          if (
-            project.name.includes('綠能') ||
-            project.name.includes('太陽能') ||
-            project.name.includes('再生能源')
-          ) {
-            suggestion = suggestions.environmental['陽光綠能計畫'];
-          } else if (
-            project.name.includes('循環') ||
-            project.name.includes('回收') ||
-            project.name.includes('廢棄物')
-          ) {
-            suggestion = suggestions.environmental['循環經濟示範廠'];
-          } else if (
-            project.name.includes('數位') ||
-            project.name.includes('智慧') ||
-            project.name.includes('AI') ||
-            project.name.includes('減碳')
-          ) {
-            suggestion = suggestions.environmental['數位轉型減碳計畫'];
-          } else if (
-            project.name.includes('人才') ||
-            project.name.includes('培訓') ||
-            project.name.includes('教育')
-          ) {
-            suggestion = suggestions.social['永續人才培育計畫'];
-          } else if (
-            project.name.includes('社區') ||
-            project.name.includes('公益') ||
-            project.name.includes('服務')
-          ) {
-            suggestion = suggestions.social['社區賦能計畫'];
-          } else if (
-            project.name.includes('多元') ||
-            project.name.includes('共融') ||
-            project.name.includes('職場')
-          ) {
-            suggestion = suggestions.social['多元共融職場'];
-          } else if (
-            project.name.includes('治理') ||
-            project.name.includes('委員會') ||
-            project.name.includes('制度')
-          ) {
-            suggestion = suggestions.governance['ESG治理制度建置'];
-          } else if (
-            project.name.includes('供應鏈') ||
-            project.name.includes('供應商')
-          ) {
-            suggestion = suggestions.governance['供應鏈永續管理'];
-          } else if (
-            project.name.includes('透明') ||
-            project.name.includes('揭露') ||
-            project.name.includes('報告')
-          ) {
-            suggestion = suggestions.governance['透明度與揭露強化'];
-          } else {
-            // 根據類別提供通用建議
-            const categoryDefaults = {
-              environmental:
-                '本環境項目致力於減少環境影響，透過創新技術與管理措施，提升資源使用效率並降低碳足跡。項目包含完整的規劃、執行與監控機制，預期將為企業環境績效帶來顯著改善，並支持永續發展目標的達成。',
-              social:
-                '本社會責任項目關注利害關係人權益，透過系統性的方案設計與執行，促進社會共融與永續發展。項目將整合內外部資源，建立長期合作夥伴關係，創造企業與社會的共享價值。',
-              governance:
-                '本治理項目旨在強化企業治理效能，建立透明、負責且有效的管理機制。透過制度建置、流程優化與能力提升，確保企業營運符合法規要求與國際標準，提升企業治理水準與競爭力。',
-            };
-            suggestion =
-              categoryDefaults[project.category] ||
-              '本永續項目致力於創造環境、社會與經濟的平衡發展，透過創新的方法與技術，推動企業永續轉型並創造長期價值。';
-          }
-        }
-      } else {
-        suggestion =
-          '本永續項目致力於創造環境、社會與經濟的平衡發展，透過創新的方法與技術，推動企業永續轉型並創造長期價值。';
-      }
+  //     // 根據項目類別和名稱生成建議
+  //     let suggestion = '';
+  //     if (project.category && suggestions[project.category]) {
+  //       // 嘗試精確匹配項目名稱
+  //       const exactMatch = suggestions[project.category][project.name];
+  //       if (exactMatch) {
+  //         suggestion = exactMatch;
+  //       } else {
+  //         // 根據關鍵字匹配
+  //         if (
+  //           project.name.includes('綠能') ||
+  //           project.name.includes('太陽能') ||
+  //           project.name.includes('再生能源')
+  //         ) {
+  //           suggestion = suggestions.environmental['陽光綠能計畫'];
+  //         } else if (
+  //           project.name.includes('循環') ||
+  //           project.name.includes('回收') ||
+  //           project.name.includes('廢棄物')
+  //         ) {
+  //           suggestion = suggestions.environmental['循環經濟示範廠'];
+  //         } else if (
+  //           project.name.includes('數位') ||
+  //           project.name.includes('智慧') ||
+  //           project.name.includes('AI') ||
+  //           project.name.includes('減碳')
+  //         ) {
+  //           suggestion = suggestions.environmental['數位轉型減碳計畫'];
+  //         } else if (
+  //           project.name.includes('人才') ||
+  //           project.name.includes('培訓') ||
+  //           project.name.includes('教育')
+  //         ) {
+  //           suggestion = suggestions.social['永續人才培育計畫'];
+  //         } else if (
+  //           project.name.includes('社區') ||
+  //           project.name.includes('公益') ||
+  //           project.name.includes('服務')
+  //         ) {
+  //           suggestion = suggestions.social['社區賦能計畫'];
+  //         } else if (
+  //           project.name.includes('多元') ||
+  //           project.name.includes('共融') ||
+  //           project.name.includes('職場')
+  //         ) {
+  //           suggestion = suggestions.social['多元共融職場'];
+  //         } else if (
+  //           project.name.includes('治理') ||
+  //           project.name.includes('委員會') ||
+  //           project.name.includes('制度')
+  //         ) {
+  //           suggestion = suggestions.governance['ESG治理制度建置'];
+  //         } else if (
+  //           project.name.includes('供應鏈') ||
+  //           project.name.includes('供應商')
+  //         ) {
+  //           suggestion = suggestions.governance['供應鏈永續管理'];
+  //         } else if (
+  //           project.name.includes('透明') ||
+  //           project.name.includes('揭露') ||
+  //           project.name.includes('報告')
+  //         ) {
+  //           suggestion = suggestions.governance['透明度與揭露強化'];
+  //         } else {
+  //           // 根據類別提供通用建議
+  //           const categoryDefaults = {
+  //             environmental:
+  //               '本環境項目致力於減少環境影響，透過創新技術與管理措施，提升資源使用效率並降低碳足跡。項目包含完整的規劃、執行與監控機制，預期將為企業環境績效帶來顯著改善，並支持永續發展目標的達成。',
+  //             social:
+  //               '本社會責任項目關注利害關係人權益，透過系統性的方案設計與執行，促進社會共融與永續發展。項目將整合內外部資源，建立長期合作夥伴關係，創造企業與社會的共享價值。',
+  //             governance:
+  //               '本治理項目旨在強化企業治理效能，建立透明、負責且有效的管理機制。透過制度建置、流程優化與能力提升，確保企業營運符合法規要求與國際標準，提升企業治理水準與競爭力。',
+  //           };
+  //           suggestion =
+  //             categoryDefaults[project.category] ||
+  //             '本永續項目致力於創造環境、社會與經濟的平衡發展，透過創新的方法與技術，推動企業永續轉型並創造長期價值。';
+  //         }
+  //       }
+  //     } else {
+  //       suggestion =
+  //         '本永續項目致力於創造環境、社會與經濟的平衡發展，透過創新的方法與技術，推動企業永續轉型並創造長期價值。';
+  //     }
 
-      setAiSuggestions((prev) => ({ ...prev, [projectIndex]: suggestion }));
-      setLoadingAI((prev) => ({ ...prev, [projectIndex]: false }));
-    }, 2000);
-  };
+  //     setAiSuggestions((prev) => ({ ...prev, [projectIndex]: suggestion }));
+  //     setLoadingAI((prev) => ({ ...prev, [projectIndex]: false }));
+  //   }, 2000);
+  // };
 
   // 應用AI建議到項目描述
-  const applyAISuggestion = (projectIndex: number) => {
-    const suggestion = aiSuggestions[projectIndex];
-    if (suggestion) {
-      handleProjectChange(projectIndex, 'description', suggestion);
-      // 清除建議以節省空間
-      setAiSuggestions((prev) => {
-        const newSuggestions = { ...prev };
-        delete newSuggestions[projectIndex];
-        return newSuggestions;
-      });
-    }
-  };
+  // const applyAISuggestion = (projectIndex: number) => {
+  //   const suggestion = aiSuggestions[projectIndex];
+  //   if (suggestion) {
+  //     handleProjectChange(projectIndex, 'description', suggestion);
+  //     // 清除建議以節省空間
+  //     setAiSuggestions((prev) => {
+  //       const newSuggestions = { ...prev };
+  //       delete newSuggestions[projectIndex];
+  //       return newSuggestions;
+  //     });
+  //   }
+  // };
 
   // PDF下載功能
   const downloadPDF = async () => {
