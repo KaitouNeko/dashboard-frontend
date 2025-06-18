@@ -88,27 +88,22 @@ export interface ESGReportSixPages {
   projectResults: {
     overview: string;
     environmentalMetrics: {
-      annualElectricityUsage: number;
-      useOfRenewableEnergy: boolean;
-      annualWaterUsage: number;
-      wasteSeparationAndRecycling: boolean;
-      environmentalCertifications: boolean;
+      carbonReduction: number; // 碳減排量 (噸)
+      energySaved: number; // 節約能源 (度)
+      renewablePercentage: number; // 再生能源比例 (%)
+      wasteReduction: number; // 廢棄物減少 (噸)
+      waterSaved: number; // 節約用水 (立方米)
     };
     socialMetrics: {
-      totalNumberOfEmployees: number;
-      percentageOfFemaleEmployees: number;
-      employeeTrainingProvided: boolean;
-      averageTrainingHoursPerEmployee: number;
-      participationInCommunityActivities: boolean;
-      employeeTurnoverRate: number;
+      communityBeneficiaries: number; // 社區受益人數
+      employeeVolunteerHours: number; // 員工志工時數
+      diversityScore: number; // 多元化評分 (0-100)
+      trainingHours: number; // 每位員工培訓時數
     };
     governanceMetrics: {
-      presenceOfCompanyRulesOrOperationsPolicy: boolean;
-      responsiblePersonForFinanceOrRisk: boolean;
-      regularInternalMeetingsHeld: boolean;
-      salaryAndPromotionPolicyInPlace: boolean;
-      transparencyInMajorCompanyPolicies: boolean;
-      ESGOrSustainabilityOfficerOrDepartmentInPlace: boolean;
+      transparencyScore: number; // 透明度評分 (0-100)
+      ethicsTraining: number; // 道德培訓完成率 (%)
+      riskAssessment: number; // 風險評估完整性 (0-100)
     };
     yearOnYearComparison: {
       categories: string[];
@@ -283,107 +278,107 @@ export const generateSampleESGReportSixPagesData = (
     },
     
     // 第5頁: 永續項目頁
-    // sustainabilityProjects: {
-    //   overview: `${companyName}積極推動多項永續發展專案，涵蓋環境保護、社會參與及公司治理三大面向。這些專案由專責的ESG委員會監督，並定期評估成效，確保與公司整體永續策略一致。`,
-    //   projects: [
-    //     {
-    //       name: "陽光綠能計畫",
-    //       category: "environmental",
-    //       description: "在公司總部及各廠區屋頂安裝太陽能板，提高再生能源使用比例。目前已完成總部與三座廠區的安裝，每年可產生約180萬度綠電。",
-    //       startDate: subMonths(today, 18),
-    //       status: "completed",
-    //       keyMetrics: {
-    //         investmentAmount: Math.round(1200 * renewableFactor),
-    //         estimatedImpact: "每年減少約900噸碳排放"
-    //       }
-    //     },
-    //     {
-    //       name: "循環經濟示範廠",
-    //       category: "environmental",
-    //       description: "將生產過程中產生的廢棄物轉化為可用資源，實現資源循環利用。目前廢棄物回收率已達75%以上。",
-    //       startDate: subMonths(today, 10),
-    //       status: "in-progress",
-    //       keyMetrics: {
-    //         investmentAmount: Math.round(850 * energyFactor),
-    //         estimatedImpact: "廢棄物處理成本降低35%，資源再利用率提升40%"
-    //       }
-    //     },
-    //     {
-    //       name: "數位轉型減碳計畫",
-    //       category: "environmental",
-    //       description: "導入智能能源管理系統，優化生產流程，減少能源消耗與碳排放。",
-    //       startDate: subMonths(today, 6),
-    //       status: "in-progress",
-    //       keyMetrics: {
-    //         investmentAmount: Math.round(750 * carbonFactor),
-    //         estimatedImpact: "能源效率提升18%，減少碳排放約15%"
-    //       }
-    //     },
-    //     {
-    //       name: "永續人才培育計畫",
-    //       category: "social",
-    //       description: "為員工提供ESG相關培訓課程，提升永續意識與專業能力。每位員工每年至少接受16小時相關培訓。",
-    //       startDate: subMonths(today, 12),
-    //       status: "completed",
-    //       keyMetrics: {
-    //         investmentAmount: Math.round(320 * socialFactor),
-    //         estimatedImpact: "員工永續知識評分提升25%，創新提案增加30%"
-    //       }
-    //     },
-    //     {
-    //       name: "綠色供應鏈管理",
-    //       category: "governance",
-    //       description: "要求供應商符合ESG標準，並提供輔導與資源，協助供應商提升永續表現。",
-    //       startDate: subMonths(today, 15),
-    //       status: "in-progress",
-    //       keyMetrics: {
-    //         investmentAmount: Math.round(480 * governanceFactor),
-    //         estimatedImpact: "65%的供應商已達成永續採購標準"
-    //       }
-    //     }
-    //   ]
-    // },
+    sustainabilityProjects: {
+      overview: `${companyName}積極推動多項永續發展專案，涵蓋環境保護、社會參與及公司治理三大面向。這些專案由專責的ESG委員會監督，並定期評估成效，確保與公司整體永續策略一致。`,
+      projects: [
+        {
+          name: "陽光綠能計畫",
+          category: "environmental",
+          description: "在公司總部及各廠區屋頂安裝太陽能板，提高再生能源使用比例。目前已完成總部與三座廠區的安裝，每年可產生約180萬度綠電。",
+          startDate: subMonths(today, 18),
+          status: "completed",
+          keyMetrics: {
+            investmentAmount: Math.round(1200 * renewableFactor),
+            estimatedImpact: "每年減少約900噸碳排放"
+          }
+        },
+        {
+          name: "循環經濟示範廠",
+          category: "environmental",
+          description: "將生產過程中產生的廢棄物轉化為可用資源，實現資源循環利用。目前廢棄物回收率已達75%以上。",
+          startDate: subMonths(today, 10),
+          status: "in-progress",
+          keyMetrics: {
+            investmentAmount: Math.round(850 * energyFactor),
+            estimatedImpact: "廢棄物處理成本降低35%，資源再利用率提升40%"
+          }
+        },
+        {
+          name: "數位轉型減碳計畫",
+          category: "environmental",
+          description: "導入智能能源管理系統，優化生產流程，減少能源消耗與碳排放。",
+          startDate: subMonths(today, 6),
+          status: "in-progress",
+          keyMetrics: {
+            investmentAmount: Math.round(750 * carbonFactor),
+            estimatedImpact: "能源效率提升18%，減少碳排放約15%"
+          }
+        },
+        {
+          name: "永續人才培育計畫",
+          category: "social",
+          description: "為員工提供ESG相關培訓課程，提升永續意識與專業能力。每位員工每年至少接受16小時相關培訓。",
+          startDate: subMonths(today, 12),
+          status: "completed",
+          keyMetrics: {
+            investmentAmount: Math.round(320 * socialFactor),
+            estimatedImpact: "員工永續知識評分提升25%，創新提案增加30%"
+          }
+        },
+        {
+          name: "綠色供應鏈管理",
+          category: "governance",
+          description: "要求供應商符合ESG標準，並提供輔導與資源，協助供應商提升永續表現。",
+          startDate: subMonths(today, 15),
+          status: "in-progress",
+          keyMetrics: {
+            investmentAmount: Math.round(480 * governanceFactor),
+            estimatedImpact: "65%的供應商已達成永續採購標準"
+          }
+        }
+      ]
+    },
     
     // 第6頁: 永續項目執行結果頁
-    // projectResults: {
-    //   overview: `過去一年，${companyName}在永續發展領域取得顯著進展。我們不僅達成多項環境目標，也在社會參與及公司治理方面有所突破。以下是我們的主要成果與績效指標。`,
-    //   environmentalMetrics: {
-    //     : Math.round(680 * carbonFactor), // 碳減排量 (噸)
-    //     energySaved: Math.round(720000 * energyFactor), // 節約能源 (度)
-    //     renewablePercentage: renewablePercentage, // 再生能源比例 (%)
-    //     wasteReduction: Math.round(45 * energyFactor), // 廢棄物減少 (噸)
-    //     waterSaved: Math.round(3500 * energyFactor) // 節約用水 (立方米)
-    //   },
-    //   socialMetrics: {
-    //     communityBeneficiaries: Math.round(2800 * socialFactor), // 社區受益人數
-    //     employeeVolunteerHours: Math.round(1250 * socialFactor), // 員工志工時數
-    //     diversityScore: Math.round(78 * socialFactor), // 多元化評分 (0-100)
-    //     trainingHours: Math.round(32 * socialFactor) // 每位員工培訓時數
-    //   },
-    //   governanceMetrics: {
-    //     transparencyScore: Math.round(85 * governanceFactor), // 透明度評分 (0-100)
-    //     ethicsTraining: Math.round(96 * governanceFactor), // 道德培訓完成率 (%)
-    //     riskAssessment: Math.round(82 * governanceFactor) // 風險評估完整性 (0-100)
-    //   },
-    //   yearOnYearComparison: {
-    //     categories: ["碳排放量", "能源使用", "廢棄物產生", "用水量", "永續投資"],
-    //     previousYearData: [100, 100, 100, 100, 100], // 基準值 (去年=100%)
-    //     currentYearData: [
-    //       Math.round(100 - 15 * carbonFactor), // 碳排放減少
-    //       Math.round(100 - 12 * energyFactor), // 能源使用減少
-    //       Math.round(100 - 8 * energyFactor),  // 廢棄物減少
-    //       Math.round(100 - 10 * energyFactor), // 用水減少
-    //       Math.round(100 + 25 * (socialFactor + governanceFactor) / 2) // 永續投資增加
-    //     ]
-    //   },
-    //   futureOutlook: [
-    //     "加速碳中和進程，增加再生能源投資",
-    //     "擴大循環經濟應用範圍，提高資源再利用率",
-    //     "深化永續供應鏈管理，協助供應商提升ESG表現",
-    //     "強化氣候變遷風險評估與調適能力",
-    //     "推動更多元共融的工作環境與社會參與計畫"
-    //   ]
-    // }
+    projectResults: {
+      overview: `過去一年，${companyName}在永續發展領域取得顯著進展。我們不僅達成多項環境目標，也在社會參與及公司治理方面有所突破。以下是我們的主要成果與績效指標。`,
+      environmentalMetrics: {
+        carbonReduction: Math.round(680 * carbonFactor), // 碳減排量 (噸)
+        energySaved: Math.round(720000 * energyFactor), // 節約能源 (度)
+        renewablePercentage: renewablePercentage, // 再生能源比例 (%)
+        wasteReduction: Math.round(45 * energyFactor), // 廢棄物減少 (噸)
+        waterSaved: Math.round(3500 * energyFactor) // 節約用水 (立方米)
+      },
+      socialMetrics: {
+        communityBeneficiaries: Math.round(2800 * socialFactor), // 社區受益人數
+        employeeVolunteerHours: Math.round(1250 * socialFactor), // 員工志工時數
+        diversityScore: Math.round(78 * socialFactor), // 多元化評分 (0-100)
+        trainingHours: Math.round(32 * socialFactor) // 每位員工培訓時數
+      },
+      governanceMetrics: {
+        transparencyScore: Math.round(85 * governanceFactor), // 透明度評分 (0-100)
+        ethicsTraining: Math.round(96 * governanceFactor), // 道德培訓完成率 (%)
+        riskAssessment: Math.round(82 * governanceFactor) // 風險評估完整性 (0-100)
+      },
+      yearOnYearComparison: {
+        categories: ["碳排放量", "能源使用", "廢棄物產生", "用水量", "永續投資"],
+        previousYearData: [100, 100, 100, 100, 100], // 基準值 (去年=100%)
+        currentYearData: [
+          Math.round(100 - 15 * carbonFactor), // 碳排放減少
+          Math.round(100 - 12 * energyFactor), // 能源使用減少
+          Math.round(100 - 8 * energyFactor),  // 廢棄物減少
+          Math.round(100 - 10 * energyFactor), // 用水減少
+          Math.round(100 + 25 * (socialFactor + governanceFactor) / 2) // 永續投資增加
+        ]
+      },
+      futureOutlook: [
+        "加速碳中和進程，增加再生能源投資",
+        "擴大循環經濟應用範圍，提高資源再利用率",
+        "深化永續供應鏈管理，協助供應商提升ESG表現",
+        "強化氣候變遷風險評估與調適能力",
+        "推動更多元共融的工作環境與社會參與計畫"
+      ]
+    }
   };
 };
 
