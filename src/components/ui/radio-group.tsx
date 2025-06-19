@@ -27,16 +27,28 @@ function RadioGroupItem({
     <RadioGroupPrimitive.Item
       data-slot="radio-group-item"
       className={cn(
-        'broder border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+        'border-2 border-input text-primary bg-background transition-all duration-200 ease-in-out',
+        'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50',
+        'aria-checked:border-primary aria-checked:shadow-[0_0_0_4px_var(--tw-shadow-color)] aria-checked:shadow-primary/10',
+        'hover:border-primary/70 hover:shadow-xs',
+        'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+        'dark:bg-input/30 aspect-square size-5 shrink-0 rounded-full shadow-xs outline-none',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
+      style={{
+        borderColor: 'oklch(54.6% .245 262.881)',
+      }}
       {...props}
     >
       <RadioGroupPrimitive.Indicator
         data-slot="radio-group-indicator"
-        className="relative flex items-center justify-center"
+        className="relative flex items-center justify-center animate-fade-in"
       >
-        <CircleIcon className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2" />
+        <CircleIcon
+          className="absolute top-1/2 left-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 transition-all duration-200"
+          style={{ fill: 'oklch(54.6% .245 262.881)' }}
+        />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );

@@ -79,10 +79,8 @@ const ESGReportGenerator: React.FC = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedData, setGeneratedData] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState<{ [key: number]: string }>(
-    {}
-  );
-  const [loadingAI, setLoadingAI] = useState<{ [key: number]: boolean }>({});
+  const [aiSuggestion, setAiSuggestion] = useState('');
+  const [loadingAI, setSuggestLoadingAI] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
 
@@ -254,21 +252,32 @@ const ESGReportGenerator: React.FC = () => {
           environmentalMetrics: {
             ...baseData.projectResults.environmentalMetrics,
             // 根據表單數據調整環境指標
-            carbonReduction: formData.annualElectricityUsage > 0 ? 
-              Math.round(formData.annualElectricityUsage * 0.3) : 
-              baseData.projectResults.environmentalMetrics.carbonReduction,
-            energySaved: formData.annualElectricityUsage > 0 ? 
-              Math.round(formData.annualElectricityUsage * 0.15) : 
-              baseData.projectResults.environmentalMetrics.energySaved,
-            renewablePercentage: formData.useOfRenewableEnergy ? 
-              Math.min(85, baseData.projectResults.environmentalMetrics.renewablePercentage + 20) : 
-              baseData.projectResults.environmentalMetrics.renewablePercentage,
-            wasteReduction: formData.wasteSeparationAndRecycling ? 
-              Math.round(baseData.projectResults.environmentalMetrics.wasteReduction * 1.2) : 
-              baseData.projectResults.environmentalMetrics.wasteReduction,
-            waterSaved: formData.annualWaterUsage > 0 ? 
-              Math.round(formData.annualWaterUsage * 0.25) : 
-              baseData.projectResults.environmentalMetrics.waterSaved,
+            carbonReduction:
+              formData.annualElectricityUsage > 0
+                ? Math.round(formData.annualElectricityUsage * 0.3)
+                : baseData.projectResults.environmentalMetrics.carbonReduction,
+            energySaved:
+              formData.annualElectricityUsage > 0
+                ? Math.round(formData.annualElectricityUsage * 0.15)
+                : baseData.projectResults.environmentalMetrics.energySaved,
+            renewablePercentage: formData.useOfRenewableEnergy
+              ? Math.min(
+                  85,
+                  baseData.projectResults.environmentalMetrics
+                    .renewablePercentage + 20
+                )
+              : baseData.projectResults.environmentalMetrics
+                  .renewablePercentage,
+            wasteReduction: formData.wasteSeparationAndRecycling
+              ? Math.round(
+                  baseData.projectResults.environmentalMetrics.wasteReduction *
+                    1.2
+                )
+              : baseData.projectResults.environmentalMetrics.wasteReduction,
+            waterSaved:
+              formData.annualWaterUsage > 0
+                ? Math.round(formData.annualWaterUsage * 0.25)
+                : baseData.projectResults.environmentalMetrics.waterSaved,
             // 新增的環境指標
             annualElectricityUsage: formData.annualElectricityUsage,
             useOfRenewableEnergy: formData.useOfRenewableEnergy,
@@ -279,44 +288,73 @@ const ESGReportGenerator: React.FC = () => {
           socialMetrics: {
             ...baseData.projectResults.socialMetrics,
             // 根據表單數據調整社會指標
-            communityBeneficiaries: formData.participationInCommunityActivities ? 
-              Math.round(baseData.projectResults.socialMetrics.communityBeneficiaries * 1.3) : 
-              baseData.projectResults.socialMetrics.communityBeneficiaries,
-            employeeVolunteerHours: formData.participationInCommunityActivities ? 
-              Math.round(baseData.projectResults.socialMetrics.employeeVolunteerHours * 1.4) : 
-              baseData.projectResults.socialMetrics.employeeVolunteerHours,
-            diversityScore: formData.percentageOfFemaleEmployees > 0 ? 
-              Math.min(100, Math.round(60 + formData.percentageOfFemaleEmployees * 0.8)) : 
-              baseData.projectResults.socialMetrics.diversityScore,
-            trainingHours: formData.employeeTrainingProvided ? 
-              formData.averageTrainingHoursPerEmployee : 
-              baseData.projectResults.socialMetrics.trainingHours,
+            communityBeneficiaries: formData.participationInCommunityActivities
+              ? Math.round(
+                  baseData.projectResults.socialMetrics.communityBeneficiaries *
+                    1.3
+                )
+              : baseData.projectResults.socialMetrics.communityBeneficiaries,
+            employeeVolunteerHours: formData.participationInCommunityActivities
+              ? Math.round(
+                  baseData.projectResults.socialMetrics.employeeVolunteerHours *
+                    1.4
+                )
+              : baseData.projectResults.socialMetrics.employeeVolunteerHours,
+            diversityScore:
+              formData.percentageOfFemaleEmployees > 0
+                ? Math.min(
+                    100,
+                    Math.round(60 + formData.percentageOfFemaleEmployees * 0.8)
+                  )
+                : baseData.projectResults.socialMetrics.diversityScore,
+            trainingHours: formData.employeeTrainingProvided
+              ? formData.averageTrainingHoursPerEmployee
+              : baseData.projectResults.socialMetrics.trainingHours,
             // 新增的社會指標
             femaleEmployeePercentage: formData.percentageOfFemaleEmployees,
             employeeTurnoverRate: formData.employeeTurnoverRate,
             totalEmployees: formData.totalNumberOfEmployees,
-            averageTrainingHoursPerEmployee: formData.averageTrainingHoursPerEmployee,
-            participationInCommunityActivities: formData.participationInCommunityActivities,
+            averageTrainingHoursPerEmployee:
+              formData.averageTrainingHoursPerEmployee,
+            participationInCommunityActivities:
+              formData.participationInCommunityActivities,
           },
           governanceMetrics: {
             ...baseData.projectResults.governanceMetrics,
             // 根據表單數據調整治理指標
-            transparencyScore: formData.transparencyInMajorCompanyPolicies ? 
-              Math.min(100, baseData.projectResults.governanceMetrics.transparencyScore + 15) : 
-              baseData.projectResults.governanceMetrics.transparencyScore,
-            ethicsTraining: formData.ESGOrSustainabilityOfficerOrDepartmentInPlace ? 
-              Math.min(100, baseData.projectResults.governanceMetrics.ethicsTraining + 10) : 
-              baseData.projectResults.governanceMetrics.ethicsTraining,
-            riskAssessment: formData.responsiblePersonForFinanceOrRisk ? 
-              Math.min(100, baseData.projectResults.governanceMetrics.riskAssessment + 12) : 
-              baseData.projectResults.governanceMetrics.riskAssessment,
+            transparencyScore: formData.transparencyInMajorCompanyPolicies
+              ? Math.min(
+                  100,
+                  baseData.projectResults.governanceMetrics.transparencyScore +
+                    15
+                )
+              : baseData.projectResults.governanceMetrics.transparencyScore,
+            ethicsTraining:
+              formData.ESGOrSustainabilityOfficerOrDepartmentInPlace
+                ? Math.min(
+                    100,
+                    baseData.projectResults.governanceMetrics.ethicsTraining +
+                      10
+                  )
+                : baseData.projectResults.governanceMetrics.ethicsTraining,
+            riskAssessment: formData.responsiblePersonForFinanceOrRisk
+              ? Math.min(
+                  100,
+                  baseData.projectResults.governanceMetrics.riskAssessment + 12
+                )
+              : baseData.projectResults.governanceMetrics.riskAssessment,
             // 新增的治理指標
-            presenceOfCompanyRulesOrOperationsPolicy: formData.presenceOfCompanyRulesOrOperationsPolicy,
-            responsiblePersonForFinanceOrRisk: formData.responsiblePersonForFinanceOrRisk,
+            presenceOfCompanyRulesOrOperationsPolicy:
+              formData.presenceOfCompanyRulesOrOperationsPolicy,
+            responsiblePersonForFinanceOrRisk:
+              formData.responsiblePersonForFinanceOrRisk,
             regularInternalMeetingsHeld: formData.regularInternalMeetingsHeld,
-            salaryAndPromotionPolicyInPlace: formData.salaryAndPromotionPolicyInPlace,
-            transparencyInMajorCompanyPolicies: formData.transparencyInMajorCompanyPolicies,
-            ESGOrSustainabilityOfficerOrDepartmentInPlace: formData.ESGOrSustainabilityOfficerOrDepartmentInPlace,
+            salaryAndPromotionPolicyInPlace:
+              formData.salaryAndPromotionPolicyInPlace,
+            transparencyInMajorCompanyPolicies:
+              formData.transparencyInMajorCompanyPolicies,
+            ESGOrSustainabilityOfficerOrDepartmentInPlace:
+              formData.ESGOrSustainabilityOfficerOrDepartmentInPlace,
           },
         },
       };
@@ -413,7 +451,7 @@ const ESGReportGenerator: React.FC = () => {
   永續單位對應為ESGOrSustainabilityOfficerOrDepartmentInPlace
   `;
 
-  const handleSendPrompt = async () => {
+  const handleSendESGPrompt = async () => {
     const data = await axiosInstance.post('/esg/chat', {
       message: '描述：' + content + '。' + solidContent,
       model: selectedLLM,
@@ -472,6 +510,36 @@ const ESGReportGenerator: React.FC = () => {
           transData.transparencyInMajorCompanyPolicies,
         ESGOrSustainabilityOfficerOrDepartmentInPlace:
           transData.ESGOrSustainabilityOfficerOrDepartmentInPlace,
+      }));
+    }
+  };
+
+  // AI建議生成功能
+  const generateAISuggestion = async () => {
+    setSuggestLoadingAI(true);
+    const data = await axiosInstance.post('/chat', {
+      message: '提供一個公司願景的建議，直接說願景不要說其他的',
+      model: 'openai',
+      // model: 'wastonx',
+      // model: 'gemini',
+    });
+
+    console.log('generateAISuggestion data', data);
+
+    if (data?.data?.response) {
+      setAiSuggestion(data.data.response);
+    }
+    setSuggestLoadingAI(false);
+  };
+
+  // 應用AI建議到項目描述
+  const applyAISuggestion = () => {
+    if (aiSuggestion) {
+      // 清除建議以節省空間
+      setAiSuggestion('');
+      setFormData((prev) => ({
+        ...prev,
+        vision: aiSuggestion,
       }));
     }
   };
@@ -574,7 +642,7 @@ const ESGReportGenerator: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Button onClick={handleSendPrompt}>提交</Button>
+            <Button onClick={handleSendESGPrompt}>提交</Button>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -678,14 +746,82 @@ const ESGReportGenerator: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="vision">願景</Label>
-                <Textarea
-                  id="vision"
-                  value={formData.vision}
-                  onChange={(e) => handleInputChange('vision', e.target.value)}
-                  rows={2}
-                />
+                <div>
+                  <Label htmlFor="vision">願景</Label>
+
+                  <div className="flex gap-2">
+                    <Textarea
+                      id="vision"
+                      value={formData.vision}
+                      onChange={(e) =>
+                        handleInputChange('vision', e.target.value)
+                      }
+                      rows={2}
+                    />
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => generateAISuggestion()}
+                      disabled={loadingAI}
+                      className="flex items-center gap-2 px-3 py-2 h-auto whitespace-nowrap"
+                      title="AI智能建議項目描述"
+                    >
+                      {loadingAI ? (
+                        <>
+                          <div className="animate-spin h-3 w-3 border border-gray-300 border-t-blue-600 rounded-full"></div>
+                          <span className="text-xs">生成中</span>
+                        </>
+                      ) : (
+                        <>
+                          <IconSparkles className="h-3 w-3 text-blue-600" />
+                          <span className="text-xs">AI建議</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
               </div>
+              {/* AI建議顯示區域 */}
+              {aiSuggestion && (
+                <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <IconSparkles className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-800">
+                        AI 智能建議
+                      </span>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => applyAISuggestion()}
+                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-100 text-xs px-2 py-1 h-auto"
+                        title="使用此建議"
+                      >
+                        <IconCopy className="h-3 w-3 mr-1" />
+                        使用建議
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setAiSuggestion('')}
+                        className="text-gray-500 hover:text-gray-600 hover:bg-gray-100 text-xs px-2 py-1 h-auto"
+                        title="關閉建議"
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {aiSuggestion}
+                  </p>
+                </div>
+              )}
 
               <div>
                 <Label>核心價值觀</Label>
@@ -749,7 +885,7 @@ const ESGReportGenerator: React.FC = () => {
                   }
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="annualElectricityUsage">是否使用再生能源</Label>
                 <RadioGroup
                   name="useOfRenewableEnergy"
@@ -759,11 +895,11 @@ const ESGReportGenerator: React.FC = () => {
                     handleInputChange('useOfRenewableEnergy', value === 'yes');
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="useOfRenewableEnergy">是</Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="useOfRenewableEnergy">否</Label>
                   </div>
@@ -783,7 +919,7 @@ const ESGReportGenerator: React.FC = () => {
                   }
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="annualElectricityUsage">
                   是否進行垃圾分類與回收
                 </Label>
@@ -798,18 +934,18 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="wasteSeparationAndRecycling">是</Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="wasteSeparationAndRecycling">否</Label>
                   </div>
                 </RadioGroup>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="annualElectricityUsage">
                   是否取得環保相關證書（如 ISO 14001）
                 </Label>
@@ -824,11 +960,11 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="environmentalCertifications">是</Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="environmentalCertifications">否</Label>
                   </div>
@@ -873,7 +1009,7 @@ const ESGReportGenerator: React.FC = () => {
                   }
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="employeeTrainingProvided">
                   是否提供員工訓練
                 </Label>
@@ -888,11 +1024,11 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="employeeTrainingProvided">是</Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="employeeTrainingProvided">否</Label>
                   </div>
@@ -914,7 +1050,7 @@ const ESGReportGenerator: React.FC = () => {
                   }
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="participationInCommunityActivities">
                   是否參與公益活動（如捐贈/志工）
                 </Label>
@@ -931,13 +1067,13 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="participationInCommunityActivities">
                       是
                     </Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="participationInCommunityActivities">
                       否
@@ -968,7 +1104,7 @@ const ESGReportGenerator: React.FC = () => {
               <CardTitle className="text-lg">🏛️ 治理指標</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="presenceOfCompanyRulesOrOperationsPolicy">
                   是否有公司章程或營運制度
                 </Label>
@@ -987,13 +1123,13 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="presenceOfCompanyRulesOrOperationsPolicy">
                       是
                     </Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="presenceOfCompanyRulesOrOperationsPolicy">
                       否
@@ -1001,7 +1137,7 @@ const ESGReportGenerator: React.FC = () => {
                   </div>
                 </RadioGroup>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="responsiblePersonForFinanceOrRisk">
                   是否有負責帳務或風險的專責人員
                 </Label>
@@ -1018,13 +1154,13 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="responsiblePersonForFinanceOrRisk">
                       是
                     </Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="responsiblePersonForFinanceOrRisk">
                       否
@@ -1032,7 +1168,7 @@ const ESGReportGenerator: React.FC = () => {
                   </div>
                 </RadioGroup>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="regularInternalMeetingsHeld">
                   是否有固定內部會議（老闆與團隊）
                 </Label>
@@ -1047,17 +1183,17 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="regularInternalMeetingsHeld">是</Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="regularInternalMeetingsHeld">否</Label>
                   </div>
                 </RadioGroup>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="salaryAndPromotionPolicyInPlace">
                   是否有薪資與升遷制度
                 </Label>
@@ -1074,17 +1210,17 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="salaryAndPromotionPolicyInPlace">是</Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="salaryAndPromotionPolicyInPlace">否</Label>
                   </div>
                 </RadioGroup>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="transparencyInMajorCompanyPolicies">
                   是否有公開重大政策（如薪資結構）
                 </Label>
@@ -1101,13 +1237,13 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="transparencyInMajorCompanyPolicies">
                       是
                     </Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="transparencyInMajorCompanyPolicies">
                       否
@@ -1115,7 +1251,7 @@ const ESGReportGenerator: React.FC = () => {
                   </div>
                 </RadioGroup>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center py-1">
                 <Label htmlFor="ESGOrSustainabilityOfficerOrDepartmentInPlace">
                   是否設立 ESG 或永續負責單位
                 </Label>
@@ -1134,13 +1270,13 @@ const ESGReportGenerator: React.FC = () => {
                     );
                   }}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" />
                     <Label htmlFor="ESGOrSustainabilityOfficerOrDepartmentInPlace">
                       是
                     </Label>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" />
                     <Label htmlFor="ESGOrSustainabilityOfficerOrDepartmentInPlace">
                       否
