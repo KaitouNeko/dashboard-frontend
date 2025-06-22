@@ -452,7 +452,7 @@ const ESGReportGenerator: React.FC = () => {
   `;
 
   const handleSendESGPrompt = async () => {
-    const data = await axiosInstance.post('/esg/chat', {
+    const data = await axiosInstance.post('esg/chat', {
       message: '描述：' + content + '。' + solidContent,
       model: selectedLLM,
       // model: 'wastonx',
