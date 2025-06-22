@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import axiosInstance from '@/app/api/axios';
+import { AxiosError } from 'axios';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,35 +17,25 @@ export async function POST(req: NextRequest) {
     }
     
     // 訪問後端API
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:2469'}/api/chat`;
-    
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: lastUserMessage.content,
-        model: model || 'gemini',
-      }),
+    const response = await axiosInstance.post('/chat', {
+      message: lastUserMessage.content,
+      model: model || 'gemini',
     });
     
-    if (!response.ok) {
-      const errorData = await response.json();
+    // 返回結果
+    return NextResponse.json({ response: response.data.response });
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      console.error('API代理錯誤:', error.response.data);
       return NextResponse.json(
-        { error: errorData.error || '請求失敗' },
-        { status: response.status }
+        { error: error.response.data.error || '請求失敗' },
+        { status: error.response.status }
       );
     }
     
-    const data = await response.json();
-    
-    // 返回結果
-    return NextResponse.json({ response: data.response });
-  } catch (error) {
-    console.error('API代理錯誤:', error);
+    console.error('未知錯誤:', error);
     return NextResponse.json(
-      { error: '處理請求時發生錯誤' },
+      { error: '處理請求時發生內部錯誤' },
       { status: 500 }
     );
   }
