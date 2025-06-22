@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useCustomChat } from "@/hooks/use-custom-chat";
 import { Chat } from "@/components/ui/chat";
 import { cn } from "@/lib/utils";
 import { transcribeAudio } from "@/lib/utils/audio";
 import { TypingIndicator } from "@/components/ui/typing-indicator";
+import { Button } from "@/components/ui/button";
+import { Trash2, Plus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,6 +18,13 @@ import {
   SelectGroup,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ChatSessionManager } from "@/components/chat-session-manager";
 
 const CHAT_MODELS = [
   { id: "gemini", name: "Google Gemini" },
@@ -47,6 +56,7 @@ export function CustomChat({ className }: CustomChatProps) {
   const [selectedEmbeddingModel, setSelectedEmbeddingModel] = useState(
     EMBEDDING_MODELS[0].embedding[0].id
   );
+  const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(undefined);
 
   const {
     messages,
@@ -57,10 +67,13 @@ export function CustomChat({ className }: CustomChatProps) {
     stop,
     isLoading,
     setMessages,
+    clearChatHistory,
+    sessionId,
   } = useCustomChat({
     chatMode,
     model: selectedModel,
     embeddingModel: selectedEmbeddingModel,
+    sessionId: currentSessionId,
     onError: (error) => {
       console.error("Chat error:", error);
     },
@@ -78,57 +91,148 @@ export function CustomChat({ className }: CustomChatProps) {
     setChatMode(value as "chat" | "rag");
   };
 
+  // 清除對話並重新開始
+  const handleClearChat = () => {
+    clearChatHistory();
+  };
+
+  // 創建新會話
+  const handleNewSession = useCallback(() => {
+    setCurrentSessionId(undefined); // 讓 hook 生成新的 sessionId
+    // 強制重新渲染以清空對話
+    window.location.reload();
+  }, []);
+
+  // 選擇會話
+  const handleSessionSelect = useCallback((selectedSessionId: string) => {
+    if (selectedSessionId !== sessionId) {
+      setCurrentSessionId(selectedSessionId);
+      // 重新載入頁面以載入選中的會話
+      window.location.reload();
+    }
+  }, [sessionId]);
+
   return (
-    <div className={cn("flex", "flex-col", "h-full", "w-full", className)}>
-      <div className='flex justify-between mb-4'>
-        <Tabs defaultValue='chat' onValueChange={handleChatModeChange}>
-          <TabsList>
-            <TabsTrigger value='chat'>一般聊天</TabsTrigger>
-            <TabsTrigger value='rag'>文件智能查詢 (RAG)</TabsTrigger>
-          </TabsList>
-        </Tabs>
+    <div className={cn("flex h-full flex-col", className)}>
+      {/* 控制面板 */}
+      <div className="mb-4 space-y-4 rounded-lg border bg-muted/50 p-4">
+        {/* Session 資訊和操作 */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>Session ID:</span>
+            <code className="rounded bg-background px-2 py-1 text-xs font-mono">
+              {sessionId.slice(-8)}...
+            </code>
+          </div>
+          <div className="flex gap-2">
+            <ChatSessionManager
+              currentSessionId={sessionId}
+              onSessionSelect={handleSessionSelect}
+              onNewSession={handleNewSession}
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleNewSession}
+                    className="h-8 px-2"
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>開始新對話</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleClearChat}
+                    disabled={isLoading || messages.length === 0}
+                    className="h-8 px-2"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>清除當前對話</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
 
-        <div className='flex gap-2'>
-          <Select value={selectedModel} onValueChange={handleModelChange}>
-            <SelectTrigger className='w-[180px]'>
-              <SelectValue placeholder='選擇模型' />
-            </SelectTrigger>
-            <SelectContent>
-              {CHAT_MODELS.map((model) => (
-                <SelectItem key={model.id} value={model.id}>
-                  {model.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        {/* 聊天模式選擇 */}
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-medium">聊天模式:</span>
+          <Tabs value={chatMode} onValueChange={handleChatModeChange}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="chat">一般聊天</TabsTrigger>
+              <TabsTrigger value="rag">文件問答 (RAG)</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
 
-          {chatMode === "rag" && (
-            <Select
-              value={selectedEmbeddingModel}
-              onValueChange={handleEmbeddingModelChange}
-            >
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='選擇嵌入模型' />
+        {/* 模型選擇 */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">語言模型:</label>
+            <Select value={selectedModel} onValueChange={handleModelChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="選擇語言模型" />
               </SelectTrigger>
               <SelectContent>
-                {EMBEDDING_MODELS.map((model) => (
-                  <SelectGroup key={model.name}>
-                    <SelectLabel key={model.name}>{model.name}</SelectLabel>
-                    {model.embedding.map((embedding) => (
-                      <SelectItem
-                        key={embedding.id}
-                        value={embedding.id}
-                        className='pl-4'
-                      >
-                        {embedding.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
+                {CHAT_MODELS.map((model) => (
+                  <SelectItem key={model.id} value={model.id}>
+                    {model.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {chatMode === "rag" && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">嵌入模型:</label>
+              <Select
+                value={selectedEmbeddingModel}
+                onValueChange={handleEmbeddingModelChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="選擇嵌入模型" />
+                </SelectTrigger>
+                <SelectContent>
+                  {EMBEDDING_MODELS.map((provider) => (
+                    <SelectGroup key={provider.name}>
+                      <SelectLabel>{provider.name}</SelectLabel>
+                      {provider.embedding.map((model) => (
+                        <SelectItem key={model.id} value={model.id}>
+                          {model.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
         </div>
+
+        {/* 訊息統計 */}
+        {messages.length > 0 && (
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <span>對話輪數: {Math.ceil(messages.length / 2)}</span>
+            <span>總訊息: {messages.length}</span>
+            <span>模式: {chatMode === "chat" ? "一般聊天" : "RAG 問答"}</span>
+            <span className="text-green-600">✓ 短記憶已啟用</span>
+          </div>
+        )}
       </div>
 
       <Chat

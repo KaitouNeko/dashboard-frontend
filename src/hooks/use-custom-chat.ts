@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Message } from '@/components/ui/chat-message';
 
@@ -10,19 +10,126 @@ interface UseCustomChatProps {
   onError?: (error: Error) => void;
   model?: string;
   embeddingModel?: string;
+  sessionId?: string;
 }
+
+// 短記憶管理工具函數
+const ChatMemoryUtils = {
+  // 生成新的 session ID
+  generateSessionId: (): string => {
+    return `chat_${Date.now()}_${uuidv4().slice(0, 8)}`;
+  },
+
+  // 從 localStorage 獲取對話歷史
+  loadChatHistory: (sessionId: string): Message[] => {
+    try {
+      const key = `chat_history_${sessionId}`;
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // 驗證數據格式
+        if (Array.isArray(parsed) && parsed.every(msg => 
+          msg.id && msg.role && msg.content !== undefined
+        )) {
+          return parsed;
+        }
+      }
+    } catch (error) {
+      console.warn('載入聊天歷史失敗:', error);
+    }
+    return [];
+  },
+
+  // 儲存對話歷史到 localStorage
+  saveChatHistory: (sessionId: string, messages: Message[]): void => {
+    try {
+      const key = `chat_history_${sessionId}`;
+      // 只儲存最近50條訊息，避免 localStorage 過載
+      const messagesToSave = messages.slice(-50);
+      localStorage.setItem(key, JSON.stringify(messagesToSave));
+      
+      // 更新 session 列表
+      const sessionsKey = 'chat_sessions';
+      const existingSessions = JSON.parse(localStorage.getItem(sessionsKey) || '[]');
+      const sessionInfo = {
+        id: sessionId,
+        lastUpdated: Date.now(),
+        messageCount: messages.length,
+        lastMessage: messages[messages.length - 1]?.content.slice(0, 50) || ''
+      };
+      
+      const updatedSessions = existingSessions.filter((s: any) => s.id !== sessionId);
+      updatedSessions.unshift(sessionInfo);
+      
+      // 只保留最近 20 個 session
+      localStorage.setItem(sessionsKey, JSON.stringify(updatedSessions.slice(0, 20)));
+    } catch (error) {
+      console.warn('儲存聊天歷史失敗:', error);
+    }
+  },
+
+  // 清除指定 session 的歷史
+  clearChatHistory: (sessionId: string): void => {
+    try {
+      const key = `chat_history_${sessionId}`;
+      localStorage.removeItem(key);
+      
+      // 從 session 列表中移除
+      const sessionsKey = 'chat_sessions';
+      const existingSessions = JSON.parse(localStorage.getItem(sessionsKey) || '[]');
+      const updatedSessions = existingSessions.filter((s: any) => s.id !== sessionId);
+      localStorage.setItem(sessionsKey, JSON.stringify(updatedSessions));
+    } catch (error) {
+      console.warn('清除聊天歷史失敗:', error);
+    }
+  },
+
+  // 獲取所有 session 列表
+  getAllSessions: () => {
+    try {
+      const sessionsKey = 'chat_sessions';
+      return JSON.parse(localStorage.getItem(sessionsKey) || '[]');
+    } catch (error) {
+      console.warn('獲取 session 列表失敗:', error);
+      return [];
+    }
+  }
+};
 
 export function useCustomChat({
   initialMessages = [],
   chatMode = 'chat',
   onError,
   model = 'gemini',
-  embeddingModel = 'openai'
+  embeddingModel = 'openai',
+  sessionId: providedSessionId
 }: UseCustomChatProps = {}) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  // 初始化 sessionId
+  const [sessionId] = useState<string>(() => {
+    return providedSessionId || ChatMemoryUtils.generateSessionId();
+  });
+
+  // 初始化 messages，優先使用 localStorage 中的歷史
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (initialMessages.length > 0) {
+      return initialMessages;
+    }
+    
+    // 從 localStorage 載入對話歷史
+    const savedMessages = ChatMemoryUtils.loadChatHistory(sessionId);
+    return savedMessages.length > 0 ? savedMessages : [];
+  });
+
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+
+  // 當 messages 變更時自動儲存到 localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      ChatMemoryUtils.saveChatHistory(sessionId, messages);
+    }
+  }, [messages, sessionId]);
 
   // 處理用戶輸入變更
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -41,10 +148,16 @@ export function useCustomChat({
   // 添加新消息到聊天記錄
   const appendMessage = useCallback((role: 'user' | 'assistant' | 'system', content: string) => {
     const id = uuidv4();
-    const message: Message = { id, role, content };
+    const message: Message = { id, role, content, createdAt: new Date() };
     setMessages(prev => [...prev, message]);
     return message;
   }, []);
+
+  // 清除當前 session 的對話歷史
+  const clearChatHistory = useCallback(() => {
+    setMessages([]);
+    ChatMemoryUtils.clearChatHistory(sessionId);
+  }, [sessionId]);
 
   // 獲取API端點
   const getApiEndpoint = useCallback(() => {
@@ -219,10 +332,11 @@ ${companyName}致力於實現永續發展，並將環境、社會和治理(ESG)�
     try {
       const endpoint = getApiEndpoint();
       
-      // 準備請求體
+      // 準備請求體 - 新增 sessionId
       const requestBody = {
         messages: [...messages, { role: 'user', content: input }],
         model,
+        sessionId, // 傳送 sessionId 給後端
         ...(chatMode === 'rag' && { embedding_model: embeddingModel }),
       };
       
@@ -251,21 +365,18 @@ ${companyName}致力於實現永續發展，並將環境、社會和治理(ESG)�
         return;
       }
       
-      const error = err instanceof Error ? err : new Error('未知錯誤');
-      console.error('聊天錯誤:', error);
+      console.error('聊天錯誤:', err);
+      const errorMessage = (err as Error).message || '發生未知錯誤';
+      appendMessage('assistant', `抱歉，發生了錯誤：${errorMessage}`);
       
-      // 添加錯誤消息
-      appendMessage('assistant', `發生錯誤: ${error.message}`);
-      
-      // 調用錯誤處理程序
       if (onError) {
-        onError(error);
+        onError(err as Error);
       }
     } finally {
       setIsLoading(false);
       setAbortController(null);
     }
-  }, [input, chatMode, appendMessage, onError, messages, model, embeddingModel, getApiEndpoint, generateESGReportSample]);
+  }, [input, messages, chatMode, model, embeddingModel, sessionId, appendMessage, getApiEndpoint, generateESGReportSample, onError]);
 
   // 直接添加一條消息並獲得回應 (用於提示建議)
   const append = useCallback(async (userMessage: { role: 'user' | 'system' | 'assistant'; content: string }) => {
@@ -310,10 +421,11 @@ ${companyName}致力於實現永續發展，並將環境、社會和治理(ESG)�
     try {
       const endpoint = getApiEndpoint();
       
-      // 準備請求體
+      // 準備請求體 - 新增 sessionId
       const requestBody = {
         messages: [...messages, userMessage],
         model,
+        sessionId, // 傳送 sessionId 給後端
         ...(chatMode === 'rag' && { embedding_model: embeddingModel }),
       };
       
@@ -336,36 +448,24 @@ ${companyName}致力於實現永續發展，並將環境、社會和治理(ESG)�
       
       // 添加助手響應
       const assistantMessage = appendMessage('assistant', data.response);
-      
-      // 如果是ESG模式且包含報告內容，觸發更新事件
-      if (chatMode === 'esg' && data.response.includes('ESG報告')) {
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('esg-report-generated', {
-            detail: { content: data.response }
-          }));
-        }
-      }
     } catch (err) {
       if ((err as Error).name === 'AbortError') {
         console.log('請求已取消');
         return;
       }
       
-      const error = err instanceof Error ? err : new Error('未知錯誤');
-      console.error('聊天錯誤:', error);
+      console.error('追加消息錯誤:', err);
+      const errorMessage = (err as Error).message || '發生未知錯誤';
+      appendMessage('assistant', `抱歉，發生了錯誤：${errorMessage}`);
       
-      // 添加錯誤消息
-      appendMessage('assistant', `發生錯誤: ${error.message}`);
-      
-      // 調用錯誤處理程序
       if (onError) {
-        onError(error);
+        onError(err as Error);
       }
     } finally {
       setIsLoading(false);
       setAbortController(null);
     }
-  }, [isLoading, appendMessage, chatMode, onError, messages, model, embeddingModel, getApiEndpoint, generateESGReportSample]);
+  }, [isLoading, appendMessage, chatMode, generateESGReportSample, messages, onError, getApiEndpoint, model, sessionId, embeddingModel]);
 
   return {
     messages,
@@ -375,6 +475,8 @@ ${companyName}致力於實現永續發展，並將環境、社會和治理(ESG)�
     isLoading,
     stop,
     append,
-    setMessages
+    setMessages,
+    clearChatHistory,
+    sessionId
   };
 } 
