@@ -1,5 +1,6 @@
 import { Files } from "@/types/api";
 import { Message } from "@/components/ui/chat-message";
+import axiosInstance from "@/app/api/axios";
 
 // API 基礎 URL
 // const API_BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "https://www.pathofcommunity.com";
@@ -17,27 +18,15 @@ export class ApiService {
     model: string = "gemini"
   ): Promise<string> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message,
-          model,
-        }),
+      const response = await axiosInstance.post("/chat", {
+        message,
+        model,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "聊天請求失敗");
-      }
-
-      const data = await response.json();
-      return data.response;
-    } catch (error) {
+      return response.data.response;
+    } catch (error: any) {
       console.error("聊天API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "聊天請求失敗");
     }
   }
 
@@ -50,54 +39,29 @@ export class ApiService {
     embeddingModel: string = "openai"
   ): Promise<string> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/rag`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message,
-          model,
-          embedding_model: embeddingModel,
-        }),
+      const response = await axiosInstance.post("/rag", {
+        message,
+        model,
+        embedding_model: embeddingModel,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "RAG請求失敗");
-      }
-
-      const data = await response.json();
-      return data.response;
-    } catch (error) {
+      return response.data.response;
+    } catch (error: any) {
       console.error("RAG API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "RAG請求失敗");
     }
   }
 
-
-  
   /**
    * Get vector file list
    */
   static async getDocuments(): Promise<any[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "獲取文檔失敗");
-      }
-
-      return await response.json();
-    } catch (error) {
+      const response = await axiosInstance.get("/documents");
+      return response.data;
+    } catch (error: any) {
       console.error("獲取文檔API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "獲取文檔失敗");
     }
   }
 
@@ -106,49 +70,24 @@ export class ApiService {
    */
   static async deleteDocument(id: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "刪除文檔失敗");
-      }
-    } catch (error) {
+      await axiosInstance.post("/documents/delete", { id });
+    } catch (error: any) {
       console.error("刪除文檔API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "刪除文檔失敗");
     }
   }
 
   /**
    * Create vector file
    */
-
   static async inertDocument(vectorText: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents/insert`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: vectorText,
-        }),
+      await axiosInstance.post("/documents/insert", {
+        text: vectorText,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "新增文檔失敗");
-      }
-    } catch (error) {
+    } catch (error: any) {
       console.error("新增文檔API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "新增文檔失敗");
     }
   }
 
@@ -157,22 +96,11 @@ export class ApiService {
    */
   static async processFile(filename: string, model: string = "text-embedding-3-small"): Promise<any> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/process/${filename}?model=${model}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "處理文件失敗");
-      }
-
-      return await response.json();
-    } catch (error) {
+      const response = await axiosInstance.post(`/process/${filename}?model=${model}`);
+      return response.data;
+    } catch (error: any) {
       console.error("處理文件API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "處理文件失敗");
     }
   }
 
@@ -196,23 +124,12 @@ export class ApiService {
 
       console.log('要插入的文本內容:', textContent);
 
-      const response = await fetch(`${API_BASE_URL}/api/documents/insert`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: textContent,
-        }),
+      await axiosInstance.post("/documents/insert", {
+        text: textContent,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "插入向量資料庫失敗");
-      }
-    } catch (error) {
+    } catch (error: any) {
       console.error("插入向量資料庫API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "插入向量資料庫失敗");
     }
   }
 
@@ -234,20 +151,16 @@ export class ApiService {
         });
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/upload`, {
-        method: "POST",
-        body: formData,
+      const response = await axiosInstance.post("/upload", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "上傳文檔失敗");
-      }
-
-      return await response.json();
-    } catch (error) {
+      return response.data;
+    } catch (error: any) {
       console.error("上傳文檔API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "上傳文檔失敗");
     }
   }
 
@@ -256,22 +169,11 @@ export class ApiService {
    */
   static async getFileList(): Promise<Files> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/list`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "獲取文檔失敗");
-      }
-
-      return await response.json();
-    } catch (error) {
+      const response = await axiosInstance.get("/list");
+      return response.data;
+    } catch (error: any) {
       console.error("獲取文檔API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "獲取文檔失敗");
     }
   }
 
@@ -280,20 +182,10 @@ export class ApiService {
    */
   static async deleteFile(fileName: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/${fileName}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "刪除文檔失敗");
-      }
-    } catch (error) {
+      await axiosInstance.delete(`/${fileName}`);
+    } catch (error: any) {
       console.error("刪除文檔API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "刪除文檔失敗");
     }
   }
 
@@ -301,7 +193,7 @@ export class ApiService {
    * view file
    */
   static async viewFile(fileName: string): Promise<void> {
-    const url = `${API_BASE_URL}/api/view/${fileName}`;
+    const url = `${axiosInstance.defaults.baseURL}/view/${fileName}`;
     window.open(url, "_blank");
   }
 
@@ -309,7 +201,7 @@ export class ApiService {
    * download file
    */
   static async downloadFile(fileName: string): Promise<void> {
-    window.location.href = `${API_BASE_URL}/api/download/${fileName}`;
+    window.location.href = `${axiosInstance.defaults.baseURL}/download/${fileName}`;
   }
 
   /**
@@ -324,55 +216,38 @@ export class ApiService {
     temperature_celsius: number
   }[]}> {
     try {
-      
-      const response = await fetch(`${API_BASE_URL}/api/energy?facility_id=${facility_id}&min_temp=${min_temp}&max_temp=${max_temp}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-      }
-      })
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "獲取能源使用情況失敗");
-      }
-      return await response.json();
-    } catch (error) {
+      const response = await axiosInstance.get("/energy", {
+        params: {
+          facility_id,
+          min_temp,
+          max_temp,
+        },
+      });
+      return response.data;
+    } catch (error: any) {
       console.error("獲取能源使用情況API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "獲取能源使用情況失敗");
     }
   }
 
-    /**
+  /**
    * Create energy usage
    */
-  static async createEnergyUsage(facility_id: string, timestamp:string, energy_kwh:number, humidity_percent:number, temperature_celsius:number): Promise<any[]> {
+  static async createEnergyUsage(facility_id: string, timestamp: string, energy_kwh: number, humidity_percent: number, temperature_celsius: number): Promise<any[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/energy`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "facility_id": facility_id,
-            "timestamp": timestamp,
-            "energy_kwh": energy_kwh,
-            "humidity_percent": humidity_percent,
-            "temperature_celsius": temperature_celsius
-          }),
+      const response = await axiosInstance.post("/energy", {
+        facility_id,
+        timestamp,
+        energy_kwh,
+        humidity_percent,
+        temperature_celsius,
       });
-  
-      if (!response.ok) { 
-        const errorData = await response.json();
-        throw new Error(errorData.error || "新增能源使用情況失敗");
-      }
-      return await response.json();
-    } catch (error) {
+      return response.data;
+    } catch (error: any) {
       console.error("新增能源使用情況API錯誤:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "新增能源使用情況失敗");
     }
   }
-
-  
 
   /**
    * 使用LLM預測能源使用
@@ -524,30 +399,16 @@ ${JSON.stringify(historicalData.slice(-48), null, 2)}
       }
       
       // 準備查詢參數
-      const queryParams = new URLSearchParams();
-      if (startDate) queryParams.append("start_date", startDate);
-      if (endDate) queryParams.append("end_date", endDate);
+      const params: any = {};
+      if (startDate) params.start_date = startDate;
+      if (endDate) params.end_date = endDate;
       if (models && models.length > 0) {
-        models.forEach(model => queryParams.append("model", model));
+        params.model = models;
       }
       
-      const queryString = queryParams.toString();
-      const url = `${API_BASE_URL}/api/llm-stats${queryString ? `?${queryString}` : ""}`;
-      
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "獲取LLM統計數據失敗");
-      }
-
-      return await response.json();
-    } catch (error) {
+      const response = await axiosInstance.get("/llm-stats", { params });
+      return response.data;
+    } catch (error: any) {
       console.error("獲取LLM統計數據API錯誤:", error);
       // 返回空數據結構
       return {
@@ -560,8 +421,8 @@ ${JSON.stringify(historicalData.slice(-48), null, 2)}
       };
     }
   }
-
 }
+
 // 轉換輸入訊息為API格式的方法
 export function convertMessagesToApiFormat(messages: Message[]): string {
   // 只取最後一條用戶訊息
