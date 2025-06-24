@@ -308,7 +308,7 @@ export class ApiService {
    * download file
    */
   static async downloadFile(fileName: string): Promise<void> {
-    window.location.href = `http://localhost:2469/api/download/${fileName}`;
+    window.location.href = `${API_BASE_URL}/api/download/${fileName}`;
   }
 
   /**
