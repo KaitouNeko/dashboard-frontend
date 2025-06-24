@@ -2,7 +2,8 @@ import { Files } from "@/types/api";
 import { Message } from "@/components/ui/chat-message";
 
 // API 基礎 URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "https://www.pathofcommunity.com";
+// const API_BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "https://www.pathofcommunity.com";
+const API_BASE_URL = "https://www.pathofcommunity.com";
 
 /**
  * 用於與後端API通信的服務
