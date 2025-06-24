@@ -91,6 +91,79 @@ export default function EmbeddingDocumentManagement({ className }: any) {
     }
   };
 
+  // 處理文件上傳和向量化
+  const handleFileUpload = async () => {
+    if (!selectedFile) {
+      toast.error('請先選擇文件');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      // 步驟 1: 上傳文件
+      toast.info('正在上傳文件...');
+      const uploadResult = await ApiService.uploadFile(selectedFile);
+      console.log('上傳結果:', uploadResult);
+      
+      // 從上傳結果中獲取實際的檔案名稱
+      let actualFileName = selectedFile.name;
+      if (uploadResult && uploadResult.file && uploadResult.file.fileName) {
+        actualFileName = uploadResult.file.fileName;
+      } else if (uploadResult && uploadResult.fileName) {
+        actualFileName = uploadResult.fileName;
+      } else if (uploadResult && uploadResult.filename) {
+        actualFileName = uploadResult.filename;
+      } else if (uploadResult && uploadResult.file) {
+        actualFileName = uploadResult.file;
+      } else if (uploadResult && uploadResult.name) {
+        actualFileName = uploadResult.name;
+      }
+      
+      console.log('原始檔案名稱:', selectedFile.name);
+      console.log('實際檔案名稱:', actualFileName);
+      console.log('上傳結果完整內容:', JSON.stringify(uploadResult, null, 2));
+      
+      // 步驟 2: 處理文件生成向量
+      toast.info(`正在處理文件 "${actualFileName}" 並生成向量...`);
+      const processResult = await ApiService.processFile(actualFileName, 'text-embedding-3-small');
+      console.log('處理結果:', processResult);
+      
+      // 步驟 3: 將處理結果插入 Milvus
+      toast.info('正在插入向量資料庫...');
+      await ApiService.insertProcessedDocument(processResult);
+      
+      toast.success('文件上傳並向量化完成！');
+      
+      // 重新載入文檔列表
+      await loadDocuments();
+      
+      // 重置文件選擇
+      setSelectedFile(null);
+      // 重置 input 元素
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+    } catch (error) {
+      console.error('文件上傳處理錯誤:', error);
+      
+      // 更詳細的錯誤信息
+      let errorMessage = '未知錯誤';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      toast.error('文件處理失敗', {
+        description: `錯誤詳情: ${errorMessage}`,
+        duration: 8000, // 延長顯示時間以便查看錯誤
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleInsert = async () => {
     if (!vectorText.trim()) {
       toast.error('請填寫向量文本');
@@ -133,7 +206,7 @@ export default function EmbeddingDocumentManagement({ className }: any) {
               className="flex-1"
             />
             <Button
-              onClick={() => console.log('vectorText')}
+              onClick={handleFileUpload}
               disabled={!selectedFile || isLoading}
               className="flex gap-2 items-center"
             >

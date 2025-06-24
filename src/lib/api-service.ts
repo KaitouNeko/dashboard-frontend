@@ -152,6 +152,70 @@ export class ApiService {
   }
 
   /**
+   * Process file to generate vectors
+   */
+  static async processFile(filename: string, model: string = "text-embedding-3-small"): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/process/${filename}?model=${model}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "處理文件失敗");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("處理文件API錯誤:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Insert processed document to Milvus
+   */
+  static async insertProcessedDocument(processResult?: any): Promise<void> {
+    try {
+      // 從處理結果中提取文本內容
+      let textContent = '';
+      
+      if (processResult?.result?.content) {
+        textContent = processResult.result.content;
+      } else if (processResult?.result) {
+        // 如果result是字符串類型
+        textContent = typeof processResult.result === 'string' ? processResult.result : JSON.stringify(processResult.result);
+      } else {
+        // 備用：使用檔案名稱作為文本內容
+        textContent = processResult?.fileName || '處理後的文檔內容';
+      }
+
+      console.log('要插入的文本內容:', textContent);
+
+      const response = await fetch(`${API_BASE_URL}/api/documents/insert`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: textContent,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "插入向量資料庫失敗");
+      }
+    } catch (error) {
+      console.error("插入向量資料庫API錯誤:", error);
+      throw error;
+    }
+  }
+
+  /**
    * Upload file
    */
   static async uploadFile(files: File | FileList | File[]): Promise<any> {
