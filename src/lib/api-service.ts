@@ -54,6 +54,7 @@ export class ApiService {
 
   /**
    * Get vector file list
+   * 同時用於檢查集合是否存在
    */
   static async getDocuments(): Promise<any[]> {
     try {
@@ -62,6 +63,26 @@ export class ApiService {
     } catch (error: any) {
       console.error("獲取文檔API錯誤:", error);
       throw new Error(error.response?.data?.error || "獲取文檔失敗");
+    }
+  }
+
+  /**
+   * 檢查集合是否存在（通過嘗試獲取文檔來判斷）
+   */
+  static async checkCollectionExists(): Promise<boolean> {
+    try {
+      await this.getDocuments();
+      return true; // 如果能成功獲取文檔，表示集合存在
+    } catch (error: any) {
+      // 如果錯誤是因為集合不存在導致的，返回 false
+      if (error.message?.includes('collection') || 
+          error.message?.includes('集合') ||
+          error.message?.includes('not found') ||
+          error.message?.includes('不存在')) {
+        return false;
+      }
+      // 其他錯誤則拋出
+      throw error;
     }
   }
 
@@ -87,6 +108,14 @@ export class ApiService {
       });
     } catch (error: any) {
       console.error("新增文檔API錯誤:", error);
+      
+      // 如果錯誤可能是因為集合不存在，提供更友好的錯誤訊息
+      if (error.response?.data?.error?.includes('collection') ||
+          error.response?.data?.error?.includes('集合') ||
+          error.response?.status === 404) {
+        throw new Error("向量集合可能不存在，請先確保後端已初始化向量資料庫集合");
+      }
+      
       throw new Error(error.response?.data?.error || "新增文檔失敗");
     }
   }
@@ -129,6 +158,14 @@ export class ApiService {
       });
     } catch (error: any) {
       console.error("插入向量資料庫API錯誤:", error);
+      
+      // 如果錯誤可能是因為集合不存在，提供更友好的錯誤訊息
+      if (error.response?.data?.error?.includes('collection') ||
+          error.response?.data?.error?.includes('集合') ||
+          error.response?.status === 404) {
+        throw new Error("向量集合可能不存在，請先確保後端已初始化向量資料庫集合");
+      }
+      
       throw new Error(error.response?.data?.error || "插入向量資料庫失敗");
     }
   }

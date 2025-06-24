@@ -53,9 +53,24 @@ export default function EmbeddingDocumentManagement({ className }: any) {
       setDocuments(docs);
     } catch (error) {
       console.error('加載文檔錯誤:', error);
-      toast.error('無法加載文檔', {
-        description: error instanceof Error ? error.message : '未知錯誤',
-      });
+      
+      // 檢查是否是集合不存在的錯誤
+      const errorMessage = error instanceof Error ? error.message : '未知錯誤';
+      if (errorMessage.includes('collection') || 
+          errorMessage.includes('集合') || 
+          errorMessage.includes('not found') ||
+          errorMessage.includes('不存在')) {
+        toast.error('向量資料庫集合不存在', {
+          description: '請聯繫管理員初始化向量資料庫，或者嘗試插入第一筆資料來自動創建集合',
+          duration: 5000,
+        });
+        // 設置空文檔列表
+        setDocuments([]);
+      } else {
+        toast.error('無法加載文檔', {
+          description: errorMessage,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -129,11 +144,11 @@ export default function EmbeddingDocumentManagement({ className }: any) {
       const processResult = await ApiService.processFile(actualFileName, 'text-embedding-3-small');
       console.log('處理結果:', processResult);
       
-      // 步驟 3: 將處理結果插入 Milvus
+      // 步驟 3: 將處理結果插入 Milvus（可能會自動創建集合）
       toast.info('正在插入向量資料庫...');
       await ApiService.insertProcessedDocument(processResult);
       
-      toast.success('文件上傳並向量化完成！');
+      toast.success('文件上傳並向量化完成！集合已自動初始化');
       
       // 重新載入文檔列表
       await loadDocuments();
@@ -172,8 +187,10 @@ export default function EmbeddingDocumentManagement({ className }: any) {
 
     try {
       setIsLoading(true);
+      
       await ApiService.inertDocument(vectorText);
-      toast.success('文檔插入成功');
+      toast.success('文檔插入成功！如果是第一次插入，集合已自動初始化');
+      
       // 更新本地文檔列表
       await loadDocuments();
       // 重置表單並關閉 Sheet
@@ -234,8 +251,26 @@ export default function EmbeddingDocumentManagement({ className }: any) {
               加載中...
             </div>
           ) : documents.length === 0 ? (
-            <div className="py-4 text-center text-sm text-muted-foreground">
-              暫無文檔，請上傳或新增
+            <div className="py-8 text-center space-y-3">
+              <div className="text-sm text-muted-foreground">
+                暫無文檔資料
+              </div>
+              <div className="text-xs text-muted-foreground max-w-md mx-auto">
+                如果這是首次使用，向量資料庫集合可能尚未初始化。
+                <br />
+                請嘗試上傳檔案或新增向量文本來自動創建集合。
+              </div>
+              <div className="flex justify-center gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsInsertSheetOpen(true)}
+                  className="flex gap-1 items-center"
+                >
+                  <Plus className="h-4 w-4" />
+                  新增第一筆向量文本
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="space-y-2">
