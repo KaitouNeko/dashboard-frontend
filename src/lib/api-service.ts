@@ -53,8 +53,20 @@ export class ApiService {
   }
 
   /**
+   * 創建向量集合
+   */
+  static async createCollection(): Promise<void> {
+    try {
+      await axiosInstance.post("/collections/create");
+    } catch (error: any) {
+      console.error("創建集合API錯誤:", error);
+      throw new Error(error.response?.data?.error || "創建集合失敗");
+    }
+  }
+
+  /**
    * Get vector file list
-   * 同時用於檢查集合是否存在
+   * 同時用於檢查集合是否存在，如果不存在則自動創建
    */
   static async getDocuments(): Promise<any[]> {
     try {
@@ -62,24 +74,53 @@ export class ApiService {
       return response.data;
     } catch (error: any) {
       console.error("獲取文檔API錯誤:", error);
+      
+      // 如果是因為集合不存在導致的錯誤，嘗試創建集合
+      if (error.response?.status === 404 || 
+          error.response?.data?.error?.includes('collection') ||
+          error.response?.data?.error?.includes('集合') ||
+          error.response?.data?.error?.includes('not found') ||
+          error.response?.data?.error?.includes('不存在')) {
+        try {
+          console.log("集合不存在，正在創建集合...");
+          await this.createCollection();
+          console.log("集合創建成功，重新獲取文檔...");
+          
+          // 重新嘗試獲取文檔
+          const retryResponse = await axiosInstance.get("/documents");
+          return retryResponse.data;
+        } catch (createError: any) {
+          console.error("創建集合失敗:", createError);
+          throw new Error("集合不存在且創建失敗: " + (createError.response?.data?.error || createError.message));
+        }
+      }
+      
       throw new Error(error.response?.data?.error || "獲取文檔失敗");
     }
   }
 
   /**
    * 檢查集合是否存在（通過嘗試獲取文檔來判斷）
+   * 如果不存在會自動創建
    */
   static async checkCollectionExists(): Promise<boolean> {
     try {
       await this.getDocuments();
       return true; // 如果能成功獲取文檔，表示集合存在
     } catch (error: any) {
-      // 如果錯誤是因為集合不存在導致的，返回 false
+      // 如果錯誤是因為集合不存在導致的，嘗試創建
       if (error.message?.includes('collection') || 
           error.message?.includes('集合') ||
           error.message?.includes('not found') ||
           error.message?.includes('不存在')) {
-        return false;
+        try {
+          console.log("檢測到集合不存在，正在自動創建...");
+          await this.createCollection();
+          return true; // 創建成功
+        } catch (createError) {
+          console.error("自動創建集合失敗:", createError);
+          return false;
+        }
       }
       // 其他錯誤則拋出
       throw error;
@@ -103,6 +144,9 @@ export class ApiService {
    */
   static async inertDocument(vectorText: string): Promise<void> {
     try {
+      // 先確保集合存在，如果不存在會自動創建
+      await this.checkCollectionExists();
+      
       await axiosInstance.post("/documents/insert", {
         text: vectorText,
       });
@@ -113,7 +157,7 @@ export class ApiService {
       if (error.response?.data?.error?.includes('collection') ||
           error.response?.data?.error?.includes('集合') ||
           error.response?.status === 404) {
-        throw new Error("向量集合可能不存在，請先確保後端已初始化向量資料庫集合");
+        throw new Error("向量集合創建失敗，請檢查後端服務狀態");
       }
       
       throw new Error(error.response?.data?.error || "新增文檔失敗");
@@ -138,6 +182,9 @@ export class ApiService {
    */
   static async insertProcessedDocument(processResult?: any): Promise<void> {
     try {
+      // 先確保集合存在，如果不存在會自動創建
+      await this.checkCollectionExists();
+      
       // 從處理結果中提取文本內容
       let textContent = '';
       
@@ -163,7 +210,7 @@ export class ApiService {
       if (error.response?.data?.error?.includes('collection') ||
           error.response?.data?.error?.includes('集合') ||
           error.response?.status === 404) {
-        throw new Error("向量集合可能不存在，請先確保後端已初始化向量資料庫集合");
+        throw new Error("向量集合創建失敗，請檢查後端服務狀態");
       }
       
       throw new Error(error.response?.data?.error || "插入向量資料庫失敗");

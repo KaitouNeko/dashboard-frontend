@@ -54,17 +54,25 @@ export default function EmbeddingDocumentManagement({ className }: any) {
     } catch (error) {
       console.error('加載文檔錯誤:', error);
       
-      // 檢查是否是集合不存在的錯誤
+      // 檢查是否是集合相關的錯誤
       const errorMessage = error instanceof Error ? error.message : '未知錯誤';
-      if (errorMessage.includes('collection') || 
-          errorMessage.includes('集合') || 
-          errorMessage.includes('not found') ||
-          errorMessage.includes('不存在')) {
-        toast.error('向量資料庫集合不存在', {
-          description: '請聯繫管理員初始化向量資料庫，或者嘗試插入第一筆資料來自動創建集合',
+      
+      if (errorMessage.includes('集合不存在且創建失敗') || 
+          errorMessage.includes('向量集合創建失敗')) {
+        toast.error('自動創建向量集合失敗', {
+          description: '請檢查後端服務和 Milvus 資料庫狀態',
           duration: 5000,
         });
-        // 設置空文檔列表
+        setDocuments([]);
+      } else if (errorMessage.includes('collection') || 
+                 errorMessage.includes('集合') || 
+                 errorMessage.includes('not found') ||
+                 errorMessage.includes('不存在')) {
+        // 這種情況應該不會發生，因為現在會自動創建
+        toast.info('正在初始化向量資料庫集合...', {
+          description: '首次使用需要創建集合，請稍候',
+          duration: 3000,
+        });
         setDocuments([]);
       } else {
         toast.error('無法加載文檔', {
@@ -144,11 +152,11 @@ export default function EmbeddingDocumentManagement({ className }: any) {
       const processResult = await ApiService.processFile(actualFileName, 'text-embedding-3-small');
       console.log('處理結果:', processResult);
       
-      // 步驟 3: 將處理結果插入 Milvus（可能會自動創建集合）
+      // 步驟 3: 將處理結果插入 Milvus（會自動創建集合如果不存在）
       toast.info('正在插入向量資料庫...');
       await ApiService.insertProcessedDocument(processResult);
       
-      toast.success('文件上傳並向量化完成！集合已自動初始化');
+      toast.success('文件上傳並向量化完成！');
       
       // 重新載入文檔列表
       await loadDocuments();
@@ -189,7 +197,7 @@ export default function EmbeddingDocumentManagement({ className }: any) {
       setIsLoading(true);
       
       await ApiService.inertDocument(vectorText);
-      toast.success('文檔插入成功！如果是第一次插入，集合已自動初始化');
+      toast.success('文檔插入成功！');
       
       // 更新本地文檔列表
       await loadDocuments();
@@ -200,6 +208,27 @@ export default function EmbeddingDocumentManagement({ className }: any) {
     } catch (error) {
       console.error('插入文檔錯誤:', error);
       toast.error('插入文檔失敗', {
+        description: error instanceof Error ? error.message : '未知錯誤',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 手動創建集合
+  const handleCreateCollection = async () => {
+    try {
+      setIsLoading(true);
+      toast.info('正在創建向量集合...');
+      
+      await ApiService.createCollection();
+      toast.success('集合創建成功！');
+      
+      // 重新載入文檔列表
+      await loadDocuments();
+    } catch (error) {
+      console.error('創建集合錯誤:', error);
+      toast.error('創建集合失敗', {
         description: error instanceof Error ? error.message : '未知錯誤',
       });
     } finally {
@@ -234,16 +263,28 @@ export default function EmbeddingDocumentManagement({ className }: any) {
 
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-medium">向量文檔列表</h3>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsInsertSheetOpen(true)}
-              className="flex gap-1 items-center"
-              disabled={isLoading}
-            >
-              <Plus className="h-4 w-4" />
-              新增向量文本
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCreateCollection}
+                disabled={isLoading}
+                className="flex gap-1 items-center"
+              >
+                <Plus className="h-4 w-4" />
+                創建集合
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsInsertSheetOpen(true)}
+                className="flex gap-1 items-center"
+                disabled={isLoading}
+              >
+                <Plus className="h-4 w-4" />
+                新增向量文本
+              </Button>
+            </div>
           </div>
 
           {isLoading ? (
