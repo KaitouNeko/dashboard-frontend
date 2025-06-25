@@ -50,6 +50,7 @@ export function MessageInput({
 }: MessageInputProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [showInterruptPrompt, setShowInterruptPrompt] = useState(false);
+  const [isComposing, setIsComposing] = useState(false);
 
   const {
     isListening,
@@ -137,8 +138,16 @@ export function MessageInput({
     }
   };
 
+  const onCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const onCompositionEnd = () => {
+    setIsComposing(false);
+  };
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (submitOnEnter && event.key === 'Enter' && !event.shiftKey) {
+    if (submitOnEnter && event.key === 'Enter' && !event.shiftKey && !isComposing) {
       event.preventDefault();
 
       if (isGenerating && stop && enableInterrupt) {
@@ -207,6 +216,8 @@ export function MessageInput({
             ref={textAreaRef}
             onPaste={onPaste}
             onKeyDown={onKeyDown}
+            onCompositionStart={onCompositionStart}
+            onCompositionEnd={onCompositionEnd}
             className={cn(
               'z-10 w-full grow resize-none rounded-xl border border-input bg-background p-3 pr-24 text-sm ring-offset-background transition-[border] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
               showFileList && 'pb-16',
