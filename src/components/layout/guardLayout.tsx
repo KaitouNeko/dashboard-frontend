@@ -2,6 +2,10 @@
 import useAuthStore from '@/state/authstore';
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect } from 'react';
+import {
+  useAuth
+} from '@clerk/nextjs'
+
 
 interface Props {
   children: React.ReactNode;

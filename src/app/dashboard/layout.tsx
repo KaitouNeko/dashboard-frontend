@@ -20,6 +20,7 @@ export default function DashboardLayout({
         } as React.CSSProperties
       }
     >
+      
       <AppSidebar variant="inset" />
       <PageTransitionProvider>
         <SidebarInset>
