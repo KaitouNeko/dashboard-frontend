@@ -5,13 +5,14 @@ import React, { useEffect, useState } from 'react';
 import {
   useAuth
 } from '@clerk/nextjs'
+import useAuthStore from '@/state/authstore';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const GuardLayout = ({ children }: Props) => {
-  
+  const { token: localtoken } = useAuthStore((state) => state);
   const { getToken, isLoaded, isSignedIn } = useAuth();
   const [token, setToken] = useState<string | null>(null);
   const [valid, setValid] = useState<boolean>(false);
@@ -72,16 +73,19 @@ const GuardLayout = ({ children }: Props) => {
   useEffect(() => {
     if (!isLoaded || loading) return; // 等待載入完成
 
-    // 已登入 + token 驗證通過 + 在首頁 → 跳轉到 dashboard
-    if (isSignedIn && valid && pathname === '/') {
+    // 檢查是否已認證（Clerk 認證 或 本地 token）
+    const isAuthenticated = (isSignedIn && valid) || localtoken;
+
+    // 已認證 + 在首頁 → 跳轉到 dashboard
+    if (isAuthenticated && pathname === '/') {
       router.push('/dashboard');
     }
 
-    // 未登入或 token 無效 + 不在首頁 → 跳轉回首頁
-    if ((!isSignedIn || !valid) && pathname !== '/') {
+    // 未認證 + 不在首頁 → 跳轉回首頁
+    if (!isAuthenticated && pathname !== '/') {
       router.push('/');
     }
-  }, [isLoaded, isSignedIn, valid, pathname, router, loading]);
+  }, [isLoaded, isSignedIn, valid, pathname, router, loading, localtoken]);
 
   // 載入中狀態
   if (!isLoaded || loading) {
@@ -98,7 +102,8 @@ const GuardLayout = ({ children }: Props) => {
   }
 
   // 未登入或 token 無效且不在首頁時不顯示內容
-  if ((!isSignedIn || !valid) && pathname !== '/') return null;
+  const isAuthenticated = (isSignedIn && valid) || localtoken;
+  if (!isAuthenticated && pathname !== '/') return null;
 
   return <div>{children}</div>;
 };
